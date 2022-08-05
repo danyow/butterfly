@@ -7,7 +7,7 @@ public class FlySpawnerSystem : ComponentSystem
 {
 
     // 用于枚举生成器组件
-    private List<FlySpawner> _spawners = new List<FlySpawner>();
+    private readonly List<FlySpawner> _spawners = new List<FlySpawner>();
 
     private EntityQuery _query;
 
