@@ -41,10 +41,10 @@ public class FlySpawnerSystem : ComponentSystem
                 foreach (var v in _spawners[i].tempMesh.vertices)
                 {
                     var fly = EntityManager.CreateEntity(_flyArchetype);
-                    EntityManager.SetComponentData(fly, new Translation
-                    {
-                        Value = v,
-                    });
+                    EntityManager.SetComponentData(
+                        fly,
+                        new Translation { Value = v }
+                    );
 
                     // 从实体中移除 spawner 组件。
                     EntityManager.RemoveComponent(entities[j], typeof(FlySpawner));

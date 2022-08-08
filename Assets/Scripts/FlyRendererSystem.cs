@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Entities;
 using UnityEngine;
 
@@ -13,12 +14,9 @@ public class FlyRendererSystem : ComponentSystem
     {
         _sharedDataCache.Clear();
         EntityManager.GetAllUniqueSharedComponentData(_sharedDataCache);
-        foreach (var data in _sharedDataCache)
+        foreach (var data in _sharedDataCache.Where(data => data.material != null))
         {
-            if (data.material != null)
-            {
-                return data;
-            }
+            return data;
         }
         return null;
     }
@@ -37,6 +35,6 @@ public class FlyRendererSystem : ComponentSystem
         {
             return;
         }
-        Graphics.DrawMesh(_flySystem.SharedMesh, Matrix4x4.identity, sharedData?.material, 0);
+        Graphics.DrawMesh(_flySystem.SharedMesh, Matrix4x4.identity, sharedData.Value.material, 0);
     }
 }

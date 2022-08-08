@@ -20,6 +20,6 @@ public struct FlySpawner : ISharedComponentData, IEquatable<FlySpawner>
 
     public override int GetHashCode()
     {
-        return (tempMesh != null ? tempMesh.GetHashCode() : 0);
+        return tempMesh != null ? tempMesh.GetHashCode() : 0;
     }
 }
