@@ -1,6 +1,5 @@
 public class FlyRendererConversion : GameObjectConversionSystem
 {
-
     protected override void OnUpdate()
     {
         Entities.ForEach(

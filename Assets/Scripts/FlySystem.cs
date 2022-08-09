@@ -4,7 +4,9 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
+using Mesh = UnityEngine.Mesh;
+using Object = UnityEngine.Object;
+using Vector3 = UnityEngine.Vector3;
 
 public partial class FlySystem : SystemBase
 {
@@ -31,27 +33,42 @@ public partial class FlySystem : SystemBase
         }
     }
 
+    private const int MaxVertices = 60000;
+
+    private unsafe int _copySize = sizeof(float3) * MaxVertices;
+    
     public Mesh SharedMesh { get; private set; }
 
     private EntityQuery _query;
+    
     private NativeArray<float3> _vertexCache;
+    private NativeArray<float3> _normalCache;
+    
     private Vector3[] _managedVertexArray;
+    private Vector3[] _managedNormalArray;
 
     protected override void OnCreate()
     {
         base.OnCreate();
-        
-        _query = GetEntityQuery(typeof(Fly), typeof(Translation));
-        SharedMesh = new Mesh();
-        _vertexCache = new NativeArray<float3>(60000, Allocator.Persistent);
-        _managedVertexArray = new Vector3 [_vertexCache.Length];
 
-        var indexes = new int[_vertexCache.Length];
-        for (var i = 0; i < indexes.Length; i++)
+        _query = GetEntityQuery(typeof(Fly), typeof(Translation), typeof(Facet));
+        
+        SharedMesh = new Mesh();
+        
+        _vertexCache = new NativeArray<float3>(MaxVertices, Allocator.Persistent);
+        _normalCache = new NativeArray<float3>(MaxVertices, Allocator.Persistent);
+        
+        _managedVertexArray = new Vector3 [MaxVertices];
+        _managedNormalArray = new Vector3 [MaxVertices];
+
+        SharedMesh.vertices = _managedVertexArray;
+        SharedMesh.normals = _managedNormalArray;
+        
+        var indexes = new int[MaxVertices];
+        for (var i = 0; i < MaxVertices; i++)
         {
             indexes[i] = i;
         }
-        SharedMesh.vertices = _managedVertexArray;
         SharedMesh.SetTriangles(indexes, 0);
     }
 
@@ -66,23 +83,43 @@ public partial class FlySystem : SystemBase
     protected override unsafe void OnUpdate()
     {
 
-        UnsafeUtility.MemCpy(
-            UnsafeUtility.AddressOf(ref _managedVertexArray[0]),
-            _vertexCache.GetUnsafePtr(),
-            sizeof(Vector3) * _managedVertexArray.Length
-        );
-        SharedMesh.vertices = _managedVertexArray;
+        var vp = UnsafeUtility.AddressOf(ref _managedVertexArray[0]);
+        var np = UnsafeUtility.AddressOf(ref _managedNormalArray[0]);
         
+        UnsafeUtility.MemCpy(vp, _vertexCache.GetUnsafePtr(), _copySize);
+        UnsafeUtility.MemCpy(np, _normalCache.GetUnsafePtr(), _copySize);
+        
+        SharedMesh.vertices = _managedVertexArray;
+
         Entities
            .ForEach(
-            (int entityInQueryIndex, ref Fly fly, ref Translation translation) =>
-            {
-                var vi = entityInQueryIndex * 3;
-                var p = translation.Value;
-                _vertexCache[vi + 0] = p;
-                _vertexCache[vi + 1] = p + new float3(0, 0.1f, 0);
-                _vertexCache[vi + 2] = p + new float3(0.1f, 0, 0);
-            })
+                (int entityInQueryIndex, ref Fly fly, ref Facet facet, ref Translation translation) =>
+                {
+                    // var vi = entityInQueryIndex * 3;
+                    // var p = translation.Value;
+                    // _vertexCache[vi + 0] = p;
+                    // _vertexCache[vi + 1] = p + new float3(0, 0.1f, 0);
+                    // _vertexCache[vi + 2] = p + new float3(0.1f, 0, 0);
+                    
+                    var p = translation.Value;
+                    var f = facet;
+                    var vi = entityInQueryIndex * 3;
+
+                    var v1 = p + f.vertex1;
+                    var v2 = p + f.vertex2;
+                    var v3 = p + f.vertex3;
+                    var n = math.normalize(math.cross(v2 - v1, v3 - v1));
+
+                    _vertexCache[vi + 0] = v1;
+                    _vertexCache[vi + 1] = v2;
+                    _vertexCache[vi + 2] = v3;
+
+                    _normalCache[vi + 0] = n;
+                    _normalCache[vi + 1] = n;
+                    _normalCache[vi + 2] = n;
+                    
+                }
+            )
            .WithStoreEntityQueryInField(ref _query)
            .WithoutBurst()
            .Run();

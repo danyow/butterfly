@@ -1,11 +1,8 @@
-using UnityEngine;
-using UnityEngine.Rendering;
-
-public class FlyRendererAuthoring : MonoBehaviour
+public class FlyRendererAuthoring : UnityEngine.MonoBehaviour
 {
-    public Material material;
+    public UnityEngine.Material material;
 
-    public ShadowCastingMode castShadows;
+    public UnityEngine.Rendering.ShadowCastingMode castShadows;
 
     public bool receiveShadows;
 }

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Entities;
-using UnityEngine;
 
+[UpdateAfter(typeof(FlySystem))]
 public class FlyRendererSystem : ComponentSystem
 {
     private List<FlyRenderer> _sharedDataCache;
@@ -34,6 +34,6 @@ public class FlyRendererSystem : ComponentSystem
         {
             return;
         }
-        Graphics.DrawMesh(_flySystem.SharedMesh, Matrix4x4.identity, sharedData.Value.material, 0);
+        UnityEngine.Graphics.DrawMesh(_flySystem.SharedMesh, UnityEngine.Matrix4x4.identity, sharedData.Value.material, 0);
     }
 }

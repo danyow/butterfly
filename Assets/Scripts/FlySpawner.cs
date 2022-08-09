@@ -1,12 +1,9 @@
-using System;
 using Unity.Entities;
-using UnityEngine;
 
-
-[Serializable]
-public struct FlySpawner : ISharedComponentData, IEquatable<FlySpawner>
+[System.Serializable]
+public struct FlySpawner : ISharedComponentData, System.IEquatable<FlySpawner>
 {
-    public Mesh templateMesh;
+    public UnityEngine.Mesh templateMesh;
 
     public bool Equals(FlySpawner other)
     {
