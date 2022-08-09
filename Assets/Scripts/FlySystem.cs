@@ -41,8 +41,6 @@ public partial class FlySystem : SystemBase
     {
         base.OnCreate();
         
-        Debug.Log("FlySystem, OnCreate");
-        
         _query = GetEntityQuery(typeof(Fly), typeof(Translation));
         SharedMesh = new Mesh();
         _vertexCache = new NativeArray<float3>(60000, Allocator.Persistent);
@@ -60,8 +58,6 @@ public partial class FlySystem : SystemBase
     protected override void OnDestroy()
     {
         base.OnDestroy();
-        
-        Debug.Log("FlySystem, OnDestroy");
         Object.Destroy(SharedMesh);
         _vertexCache.Dispose();
         _managedVertexArray = null;
@@ -69,26 +65,27 @@ public partial class FlySystem : SystemBase
 
     protected override unsafe void OnUpdate()
     {
-        
-        Debug.Log("FlySystem, OnUpdate");
-        
+
         UnsafeUtility.MemCpy(
             UnsafeUtility.AddressOf(ref _managedVertexArray[0]),
             _vertexCache.GetUnsafePtr(),
             sizeof(Vector3) * _managedVertexArray.Length
         );
         SharedMesh.vertices = _managedVertexArray;
-        var flies = _query.ToComponentDataArray<Fly>(Allocator.TempJob);
-
-
-        var constructionJob = new ConstructionJob
-        {
-            flies = flies,
-            translations = _query.ToComponentDataArray<Translation>(Allocator.TempJob),
-            vertices = _vertexCache,
-        };
-        Dependency.Complete();
-        constructionJob.Schedule(flies.Length, 64, Dependency);
+        
+        Entities
+           .ForEach(
+            (int entityInQueryIndex, ref Fly fly, ref Translation translation) =>
+            {
+                var vi = entityInQueryIndex * 3;
+                var p = translation.Value;
+                _vertexCache[vi + 0] = p;
+                _vertexCache[vi + 1] = p + new float3(0, 0.1f, 0);
+                _vertexCache[vi + 2] = p + new float3(0.1f, 0, 0);
+            })
+           .WithStoreEntityQueryInField(ref _query)
+           .WithoutBurst()
+           .Run();
     }
 
 }
