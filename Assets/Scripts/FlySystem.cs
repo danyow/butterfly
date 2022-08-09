@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public class FlySystem : ComponentSystem
+public partial class FlySystem : SystemBase
 {
 
     private struct ConstructionJob : IJobParallelFor
@@ -40,6 +40,9 @@ public class FlySystem : ComponentSystem
     protected override void OnCreate()
     {
         base.OnCreate();
+        
+        Debug.Log("FlySystem, OnCreate");
+        
         _query = GetEntityQuery(typeof(Fly), typeof(Translation));
         SharedMesh = new Mesh();
         _vertexCache = new NativeArray<float3>(60000, Allocator.Persistent);
@@ -57,6 +60,8 @@ public class FlySystem : ComponentSystem
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        
+        Debug.Log("FlySystem, OnDestroy");
         Object.Destroy(SharedMesh);
         _vertexCache.Dispose();
         _managedVertexArray = null;
@@ -64,6 +69,9 @@ public class FlySystem : ComponentSystem
 
     protected override unsafe void OnUpdate()
     {
+        
+        Debug.Log("FlySystem, OnUpdate");
+        
         UnsafeUtility.MemCpy(
             UnsafeUtility.AddressOf(ref _managedVertexArray[0]),
             _vertexCache.GetUnsafePtr(),
@@ -79,8 +87,8 @@ public class FlySystem : ComponentSystem
             translations = _query.ToComponentDataArray<Translation>(Allocator.TempJob),
             vertices = _vertexCache,
         };
-
-        constructionJob.Schedule(flies.Length, 64);
+        Dependency.Complete();
+        constructionJob.Schedule(flies.Length, 64, Dependency);
     }
 
 }

@@ -9,7 +9,6 @@ public class FlyRendererSystem : ComponentSystem
 
     private FlySystem _flySystem;
 
-
     private FlyRenderer? GetSharedData()
     {
         _sharedDataCache.Clear();

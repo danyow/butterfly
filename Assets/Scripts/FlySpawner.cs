@@ -6,11 +6,11 @@ using UnityEngine;
 [Serializable]
 public struct FlySpawner : ISharedComponentData, IEquatable<FlySpawner>
 {
-    public Mesh tempMesh;
+    public Mesh templateMesh;
 
     public bool Equals(FlySpawner other)
     {
-        return Equals(tempMesh, other.tempMesh);
+        return Equals(templateMesh, other.templateMesh);
     }
 
     public override bool Equals(object obj)
@@ -20,6 +20,6 @@ public struct FlySpawner : ISharedComponentData, IEquatable<FlySpawner>
 
     public override int GetHashCode()
     {
-        return tempMesh != null ? tempMesh.GetHashCode() : 0;
+        return templateMesh != null ? templateMesh.GetHashCode() : 0;
     }
 }

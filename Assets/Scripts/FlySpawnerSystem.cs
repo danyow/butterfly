@@ -38,13 +38,10 @@ public class FlySpawnerSystem : ComponentSystem
             // 实例化蝴蝶以及生成器实体。
             for (var j = 0; j < entities.Length; j++)
             {
-                foreach (var v in _spawners[i].tempMesh.vertices)
+                foreach (var v in _spawners[i].templateMesh.vertices)
                 {
                     var fly = EntityManager.CreateEntity(_flyArchetype);
-                    EntityManager.SetComponentData(
-                        fly,
-                        new Translation { Value = v }
-                    );
+                    EntityManager.SetComponentData(fly, new Translation { Value = v });
 
                     // 从实体中移除 spawner 组件。
                     EntityManager.RemoveComponent(entities[j], typeof(FlySpawner));

@@ -8,10 +8,7 @@ public class FlySpawnerConversion : GameObjectConversionSystem
                 var entity = GetPrimaryEntity(authoring);
                 DstEntityManager.AddSharedComponentData(
                     entity,
-                    new FlySpawner
-                    {
-                        tempMesh = authoring.tempMesh,
-                    }
+                    new FlySpawner { templateMesh = authoring.templateMesh }
                 );
             }
         );

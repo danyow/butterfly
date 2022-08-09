@@ -12,7 +12,7 @@ public class FlyRendererConversion : GameObjectConversionSystem
                     new FlyRenderer
                     {
                         material = authoring.material,
-                        castingMode = authoring.castingMode,
+                        castingShadows = authoring.castShadows,
                         receiveShadows = authoring.receiveShadows,
                     }
                 );
