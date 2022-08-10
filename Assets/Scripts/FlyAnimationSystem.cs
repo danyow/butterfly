@@ -160,7 +160,6 @@ public partial class FlyAnimationSystem : SystemBase
             
             _query.SetSharedComponentFilter(_rendererDataList[i]);
             
-            var renderIndex = i;
             Entities
                .ForEach(
                     (int entityInQueryIndex, ref Fly fly, ref Facet facet, ref Translation translation) =>
@@ -174,13 +173,13 @@ public partial class FlyAnimationSystem : SystemBase
                         var v3 = p + f.vertex3;
                         var n = math.normalize(math.cross(v2 - v1, v3 - v1));
 
-                        _meshCaches[renderIndex].vertices[vi + 0] = v1;
-                        _meshCaches[renderIndex].vertices[vi + 1] = v2;
-                        _meshCaches[renderIndex].vertices[vi + 2] = v3;
+                        cache.vertices[vi + 0] = v1;
+                        cache.vertices[vi + 1] = v2;
+                        cache.vertices[vi + 2] = v3;
 
-                        _meshCaches[renderIndex].normals[vi + 0] = n;
-                        _meshCaches[renderIndex].normals[vi + 1] = n;
-                        _meshCaches[renderIndex].normals[vi + 2] = n;
+                        cache.normals[vi + 0] = n;
+                        cache.normals[vi + 1] = n;
+                        cache.normals[vi + 2] = n;
 
                     }
                 )
