@@ -1,4 +1,4 @@
-public class FlySpawnerConversion : GameObjectConversionSystem
+public class FlySpawnerConversion: GameObjectConversionSystem
 {
     protected override void OnUpdate()
     {

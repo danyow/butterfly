@@ -1,4 +1,4 @@
-public class FlySpawnerAuthoring : UnityEngine.MonoBehaviour
+public class FlySpawnerAuthoring: UnityEngine.MonoBehaviour
 {
     public UnityEngine.Mesh templateMesh;
 }

@@ -1,4 +1,4 @@
-public class FlySharedGeometryDataAuthoring : UnityEngine.MonoBehaviour
+public class FlySharedGeometryDataAuthoring: UnityEngine.MonoBehaviour
 {
     public UnityEngine.Mesh meshInstance;
 }

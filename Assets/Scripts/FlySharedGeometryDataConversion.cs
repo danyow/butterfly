@@ -1,6 +1,3 @@
-using Unity.Collections;
-using Unity.Mathematics;
-
 public class FlySharedGeometryDataConversion: GameObjectConversionSystem
 {
     protected override void OnUpdate()
@@ -11,10 +8,7 @@ public class FlySharedGeometryDataConversion: GameObjectConversionSystem
                 var entity = GetPrimaryEntity(authoring);
                 DstEntityManager.AddSharedComponentData(
                     entity,
-                    new FlySharedGeometryData
-                    {
-                        meshInstance = authoring.meshInstance, 
-                    }
+                    new FlySharedGeometryData { meshInstance = authoring.meshInstance, }
                 );
             }
         );

@@ -3,9 +3,9 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-public struct FlySharedGeometryData : ISharedComponentData, IEquatable<FlySharedGeometryData>
+public struct FlySharedGeometryData: ISharedComponentData, IEquatable<FlySharedGeometryData>
 {
-    public const int MaxVertices = 60000;
+    public const int kMaxVertices = 60000;
     public NativeArray<float3> vertices;
     public NativeArray<float3> normals;
     public UnityEngine.Mesh meshInstance;

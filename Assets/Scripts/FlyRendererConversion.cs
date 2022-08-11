@@ -1,4 +1,4 @@
-public class FlyRendererConversion : GameObjectConversionSystem
+public class FlyRendererConversion: GameObjectConversionSystem
 {
     protected override void OnUpdate()
     {
@@ -10,9 +10,7 @@ public class FlyRendererConversion : GameObjectConversionSystem
                     entity,
                     new FlyRenderer
                     {
-                        material = authoring.material,
-                        castingShadows = authoring.castShadows,
-                        receiveShadows = authoring.receiveShadows,
+                        material = authoring.material, castingShadows = authoring.castShadows, receiveShadows = authoring.receiveShadows,
                     }
                 );
             }

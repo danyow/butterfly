@@ -1,7 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-public struct Fly : IComponentData
+public struct Fly: IComponentData
 {
     public float life;
 }
@@ -9,7 +9,7 @@ public struct Fly : IComponentData
 /// <summary>
 /// 刻面?
 /// </summary>
-public struct Facet : IComponentData
+public struct Facet: IComponentData
 {
     public float3 vertex1;
     public float3 vertex2;

@@ -1,7 +1,7 @@
 using Unity.Entities;
 
 [System.Serializable]
-public struct FlySpawner : ISharedComponentData, System.IEquatable<FlySpawner>
+public struct FlySpawner: ISharedComponentData, System.IEquatable<FlySpawner>
 {
     public UnityEngine.Mesh templateMesh;
 

@@ -1,7 +1,7 @@
 using Unity.Entities;
 
 [System.Serializable]
-public struct FlyRenderer : ISharedComponentData, System.IEquatable<FlyRenderer>
+public struct FlyRenderer: ISharedComponentData, System.IEquatable<FlyRenderer>
 {
     public UnityEngine.Material material;
 

@@ -1,4 +1,4 @@
-public class FlyRendererAuthoring : UnityEngine.MonoBehaviour
+public class FlyRendererAuthoring: UnityEngine.MonoBehaviour
 {
     public UnityEngine.Material material;
 
