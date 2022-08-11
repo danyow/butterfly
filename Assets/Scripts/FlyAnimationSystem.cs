@@ -95,8 +95,8 @@ public partial class FlyAnimationSystem: SystemBase
 
         _query = GetEntityQuery(typeof(Fly), typeof(Translation), typeof(Facet), typeof(FlyRenderer));
 
-        _managedVertexArray = new Vector3 [kMaxVertices];
-        _managedNormalArray = new Vector3 [kMaxVertices];
+        _managedVertexArray = new Vector3[kMaxVertices];
+        _managedNormalArray = new Vector3[kMaxVertices];
         _managedIndexArray = new int[kMaxVertices];
 
         for(var i = 0; i < kMaxVertices; i++)
