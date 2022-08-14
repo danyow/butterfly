@@ -1,6 +1,6 @@
 namespace FlyComponent
 {
-    public class FlySpawnerAuthoring: UnityEngine.MonoBehaviour
+    public class FlySpawnAuthoring: UnityEngine.MonoBehaviour
     {
         public UnityEngine.Mesh templateMesh;
     }

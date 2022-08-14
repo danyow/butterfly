@@ -1,16 +1,16 @@
 namespace FlyComponent
 {
-    public class FlySpawnerConversion: GameObjectConversionSystem
+    public class FlySpawnConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (FlySpawnerAuthoring authoring) =>
+                (FlySpawnAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new FlySpawner { templateMesh = authoring.templateMesh }
+                        new FlySpawn { templateMesh = authoring.templateMesh }
                     );
                 }
             );

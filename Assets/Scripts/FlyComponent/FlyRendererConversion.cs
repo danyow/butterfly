@@ -1,5 +1,8 @@
+using Unity.Entities;
+
 namespace FlyComponent
 {
+    [UpdateAfter(typeof(FlyRenderSettingsConversion))]
     public class FlyRendererConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
@@ -10,10 +13,7 @@ namespace FlyComponent
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new FlyRenderer
-                        {
-                            material = authoring.material, castingShadows = authoring.castShadows, receiveShadows = authoring.receiveShadows,
-                        }
+                        new FlyRenderer { meshInstance = authoring.meshInstance, }
                     );
                 }
             );

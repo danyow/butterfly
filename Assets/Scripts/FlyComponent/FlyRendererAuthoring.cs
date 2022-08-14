@@ -1,11 +1,13 @@
+using Unity.Collections;
+using Unity.Mathematics;
+
 namespace FlyComponent
 {
     public class FlyRendererAuthoring: UnityEngine.MonoBehaviour
     {
-        public UnityEngine.Material material;
-
-        public UnityEngine.Rendering.ShadowCastingMode castShadows;
-
-        public bool receiveShadows;
+        public FlyRenderSettings settings;
+        public NativeArray<float3> vertices;
+        public NativeArray<float3> normals;
+        public UnityEngine.Mesh meshInstance;
     }
 }
