@@ -5,16 +5,17 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-public class FlySpawnerSystem: ComponentSystem
+public class FlySpawnSystem: ComponentSystem
 {
     // 用于枚举生成器组件
-    private readonly List<FlySpawn> _spawnDatas = new List<FlySpawn>();
+    private readonly List<FlySpawn> _spawns = new List<FlySpawn>();
     private EntityQuery _spawnQuery;
 
     // 用于实例化的飞行实体原型
     private EntityArchetype _flyArchetype;
 
-    private List<NativeArray<float3>> _toBeDisposed = new List<NativeArray<float3>>();
+    // 分配清单
+    private readonly List<NativeArray<float3>> _toBeDisposed = new List<NativeArray<float3>>();
 
     protected override void OnCreate()
     {
@@ -42,9 +43,9 @@ public class FlySpawnerSystem: ComponentSystem
     protected override void OnUpdate()
     {
         // 枚举所有生成器。
-        EntityManager.GetAllUniqueSharedComponentData(_spawnDatas);
+        EntityManager.GetAllUniqueSharedComponentData(_spawns);
 
-        foreach(var spawner in _spawnDatas)
+        foreach(var spawner in _spawns)
         {
             // 如果没有数据则跳过。
             if(!spawner.templateMesh)
@@ -108,6 +109,6 @@ public class FlySpawnerSystem: ComponentSystem
             }
             spawnEntities.Dispose();
         }
-        _spawnDatas.Clear();
+        _spawns.Clear();
     }
 }

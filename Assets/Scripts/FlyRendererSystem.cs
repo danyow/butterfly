@@ -7,12 +7,14 @@ using Unity.Mathematics;
 [UpdateAfter(typeof(FlyAnimationSystem))]
 public class FlyRendererSystem: ComponentSystem
 {
-    private List<FlyRenderer> _renderers = new List<FlyRenderer>();
+    private readonly List<FlyRenderer> _renderers = new List<FlyRenderer>();
     private EntityQuery _dependency; // 仅用于依赖跟踪
 
     private UnityEngine.Vector3[] _managedVertexArray;
     private UnityEngine.Vector3[] _managedNormalArray;
     private int[] _managedIndexArray;
+
+    private int _testIndex;
 
     protected override void OnCreate()
     {
@@ -46,7 +48,26 @@ public class FlyRendererSystem: ComponentSystem
 
         foreach(var renderer in _renderers)
         {
-            if(renderer.meshInstance == null) continue;
+            if(renderer.meshInstance == null)
+            {
+                continue;
+            }
+
+            _testIndex++;
+            if(math.ceil(_testIndex / 1000f) % 2 == 0)
+            {
+                if(renderer.settings.material.name == "Blue")
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                if(renderer.settings.material.name == "Red")
+                {
+                    continue;
+                }
+            }
 
             UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
             UnsafeUtility.MemCpy(pNArray, renderer.normals.GetUnsafePtr(), copySize);
