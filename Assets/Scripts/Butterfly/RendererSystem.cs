@@ -59,6 +59,8 @@ namespace Butterfly
                 if(!meshIsReady)
                 {
                     renderer.workMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                    // 优化网格以进行频繁更新。
+                    renderer.workMesh.MarkDynamic();
                 }
 
                 UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
