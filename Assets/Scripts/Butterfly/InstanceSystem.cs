@@ -23,7 +23,8 @@ namespace Butterfly
         protected override void OnCreate()
         {
             _instanceQuery = GetEntityQuery(
-                typeof(Translation),
+                typeof(LocalToWorld),
+                typeof(NonUniformScale),
                 typeof(Instance),
                 typeof(RenderSettings)
             );
@@ -76,7 +77,7 @@ namespace Butterfly
                 foreach(var instanceEntity in instanceEntities)
                 {
                     // 检索源数据。
-                    var position = EntityManager.GetComponentData<Translation>(instanceEntity).Value;
+                    // var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity).Value;
 
                     // 为这个组创建一个渲染器。
                     var renderer = new Renderer
@@ -90,12 +91,16 @@ namespace Butterfly
 
                     _toBeDisposed.Add(renderer);
 
+                    var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity);
+                    var scale = EntityManager.GetComponentData<NonUniformScale>(instanceEntity);
+                    var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value);
+
                     // 填充实体。
                     for(var vi = 0; vi < indices.Length; vi += 3)
                     {
-                        var v1 = (float3)vertices[indices[vi + 0]];
-                        var v2 = (float3)vertices[indices[vi + 1]];
-                        var v3 = (float3)vertices[indices[vi + 2]];
+                        var v1 = math.mul(matrix, new float4(vertices[indices[vi + 0]], 1)).xyz;
+                        var v2 = math.mul(matrix, new float4(vertices[indices[vi + 1]], 1)).xyz;
+                        var v3 = math.mul(matrix, new float4(vertices[indices[vi + 2]], 1)).xyz;
                         var vc = (v1 + v2 + v3) / 3;
 
                         var entity = EntityManager.CreateEntity(_archetype);
@@ -105,7 +110,7 @@ namespace Butterfly
                             new Facet { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
                         );
 
-                        EntityManager.SetComponentData(entity, new Translation { Value = position + vc, });
+                        EntityManager.SetComponentData(entity, new Translation { Value = vc, });
 
                         EntityManager.SetSharedComponentData(entity, renderer);
                     }
