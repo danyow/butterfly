@@ -54,12 +54,22 @@ namespace Butterfly
                     continue;
                 }
 
+                var meshIsReady = renderer.workMesh.vertexCount > 0;
+
+                if(!meshIsReady)
+                {
+                    renderer.workMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                }
+
                 UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
                 UnsafeUtility.MemCpy(pNArray, renderer.normals.GetUnsafePtr(), copySize);
 
                 renderer.workMesh.vertices = _managedVertexArray;
                 renderer.workMesh.normals = _managedNormalArray;
-                renderer.workMesh.triangles = _managedIndexArray;
+                if(!meshIsReady)
+                {
+                    renderer.workMesh.triangles = _managedIndexArray;
+                }
 
                 UnityEngine.Graphics.DrawMesh(renderer.workMesh, matrix, renderer.settings.material, 0);
             }
