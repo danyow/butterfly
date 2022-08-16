@@ -13,7 +13,8 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    public partial class DisintegratorSystem: SystemBase
+    [UpdateAfter(typeof(DisintegratorAnimationSystem))]
+    public partial class DisintegratorReconstructionSystem: SystemBase
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
 
@@ -47,27 +48,21 @@ namespace Butterfly
                 renderer.counter.Count = 0;
                 NativeCounter.Concurrent counter = renderer.counter;
 
-                var spawnTime = (float)Time.ElapsedTime;
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Disintegrator disintegrator, in Facet facet, in Translation translation, in Entity entity) =>
+                        (in Facet facet, in Translation translation) =>
                         {
                             var p = translation.Value;
                             var f = facet;
-                            var n = MakeNormal(f.vertex1, f.vertex2, f.vertex3);
-
-                            var offs = new float3(0, spawnTime, 0);
-                            var d = noise.snoise(p * 8 + offs);
-                            d = math.pow(math.abs(d), 5);
 
                             var v1 = p + f.vertex1;
                             var v2 = p + f.vertex2;
                             var v3 = p + f.vertex3;
-                            var v4 = p + n * d;
+                            var v4 = p - (f.vertex2 - f.vertex1);
+                            var v5 = p - (f.vertex3 - f.vertex1);
 
-                            AddTriangle(v1, v2, v4, counter, vertices, normals);
-                            AddTriangle(v2, v3, v4, counter, vertices, normals);
-                            AddTriangle(v3, v1, v4, counter, vertices, normals);
+                            AddTriangle(v1, v2, v3, counter, vertices, normals);
+                            AddTriangle(v1, v4, v5, counter, vertices, normals);
                         }
                     )
                    .WithNativeDisableParallelForRestriction(vertices)
