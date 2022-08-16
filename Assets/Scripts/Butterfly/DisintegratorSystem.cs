@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Butterfly.FlyComponent;
+using Butterfly.Component;
 using Butterfly.NativeItem;
 using Unity.Collections;
 using Unity.Entities;
@@ -13,9 +13,9 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    public partial class FlyAnimationSystem: SystemBase
+    public partial class DisintegratorSystem: SystemBase
     {
-        private readonly List<FlyRenderer> _renderers = new List<FlyRenderer>();
+        private readonly List<Renderer> _renderers = new List<Renderer>();
 
         private EntityQuery _query;
 
@@ -27,7 +27,7 @@ namespace Butterfly
         {
             base.OnCreate();
 
-            _query = GetEntityQuery(typeof(Fly), typeof(Facet), typeof(Translation), typeof(FlyRenderer));
+            _query = GetEntityQuery(typeof(Disintegrator), typeof(Facet), typeof(Translation), typeof(Renderer));
         }
 
         protected override void OnUpdate()
@@ -40,7 +40,7 @@ namespace Butterfly
                 var vertices = renderer.vertices;
                 var normals = renderer.normals;
 
-                if(renderer.meshInstance == null)
+                if(renderer.workMesh == null)
                 {
                     continue;
                 }
@@ -50,7 +50,7 @@ namespace Butterfly
                 var spawnTime = (float)Time.ElapsedTime;
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Fly fly, in Facet facet, in Translation translation, in Entity entity) =>
+                        (int entityInQueryIndex, in Disintegrator disintegrator, in Facet facet, in Translation translation, in Entity entity) =>
                         {
                             var p = translation.Value;
                             var f = facet;

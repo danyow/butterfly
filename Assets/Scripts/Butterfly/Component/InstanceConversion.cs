@@ -1,19 +1,16 @@
-using Unity.Entities;
-
-namespace Butterfly.FlyComponent
+namespace Butterfly.Component
 {
-    [UpdateAfter(typeof(FlyRenderSettingsConversion))]
-    public class FlyRendererConversion: GameObjectConversionSystem
+    public class InstanceConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (FlyRendererAuthoring authoring) =>
+                (InstanceAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new FlyRenderer { meshInstance = authoring.meshInstance, }
+                        new Instance { templateMesh = authoring.templateMesh }
                     );
                 }
             );

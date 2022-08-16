@@ -3,30 +3,30 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace Butterfly.FlyComponent
+namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct FlyRenderer: ISharedComponentData, System.IEquatable<FlyRenderer>
+    public struct Renderer: ISharedComponentData, System.IEquatable<Renderer>
     {
         public const int kMaxVertices = 60000;
-        public FlyRenderSettings settings;
+        public RenderSettings settings;
         public NativeArray<float3> vertices;
         public NativeArray<float3> normals;
-        public UnityEngine.Mesh meshInstance;
+        public UnityEngine.Mesh workMesh;
         public NativeCounter counter;
 
-        public bool Equals(FlyRenderer other)
+        public bool Equals(Renderer other)
         {
             return settings.Equals(other.settings) &&
                    vertices.Equals(other.vertices) &&
                    normals.Equals(other.normals) &&
-                   Equals(meshInstance, other.meshInstance) &&
+                   Equals(workMesh, other.workMesh) &&
                    counter.Equals(other.counter);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is FlyRenderer other && Equals(other);
+            return obj is Renderer other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -36,7 +36,7 @@ namespace Butterfly.FlyComponent
                 var hashCode = settings.GetHashCode();
                 hashCode = (hashCode * 397) ^ vertices.GetHashCode();
                 hashCode = (hashCode * 397) ^ normals.GetHashCode();
-                hashCode = (hashCode * 397) ^ (meshInstance != null ? meshInstance.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (workMesh != null ? workMesh.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ counter.GetHashCode();
                 return hashCode;
             }

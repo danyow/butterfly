@@ -1,16 +1,19 @@
-namespace Butterfly.FlyComponent
+using Unity.Entities;
+
+namespace Butterfly.Component
 {
-    public class FlySharedGeometryDataConversion: GameObjectConversionSystem
+    [UpdateAfter(typeof(RenderSettingsConversion))]
+    public class RendererConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (FlySharedGeometryDataAuthoring authoring) =>
+                (RendererAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new FlySharedGeometryData { meshInstance = authoring.meshInstance, }
+                        new Renderer { workMesh = authoring.workMesh, }
                     );
                 }
             );

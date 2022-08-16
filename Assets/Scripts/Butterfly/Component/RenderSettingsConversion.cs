@@ -1,18 +1,18 @@
-namespace Butterfly.FlyComponent
+namespace Butterfly.Component
 {
-    public class FlyRenderSettingsConversion: GameObjectConversionSystem
+    public class RenderSettingsConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (FlyRenderSettingsAuthoring authoring) =>
+                (RenderSettingsAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new FlyRenderSettings
+                        new RenderSettings
                         {
-                            material = authoring.material, castingMode = authoring.castingMode, receiveShadows = authoring.receiveShadows,
+                            material = authoring.material, castShadows = authoring.castShadows, receiveShadows = authoring.receiveShadows,
                         }
                     );
                 }

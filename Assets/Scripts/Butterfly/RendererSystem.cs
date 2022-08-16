@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Butterfly.FlyComponent;
+using Butterfly.Component;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -7,10 +7,10 @@ using Unity.Mathematics;
 // ReSharper disable NotAccessedField.Local
 namespace Butterfly
 {
-    [UpdateAfter(typeof(FlyAnimationSystem))]
+    [UpdateAfter(typeof(DisintegratorSystem))]
     public class FlyRendererSystem: ComponentSystem
     {
-        private readonly List<FlyRenderer> _renderers = new List<FlyRenderer>();
+        private readonly List<Renderer> _renderers = new List<Renderer>();
         private EntityQuery _dependency; // 仅用于依赖跟踪
 
         private UnityEngine.Vector3[] _managedVertexArray;
@@ -19,12 +19,12 @@ namespace Butterfly
 
         protected override void OnCreate()
         {
-            _dependency = GetEntityQuery(typeof(Fly), typeof(FlyRenderer));
-            _managedVertexArray = new UnityEngine.Vector3[FlyRenderer.kMaxVertices];
-            _managedNormalArray = new UnityEngine.Vector3[FlyRenderer.kMaxVertices];
-            _managedIndexArray = new int[FlyRenderer.kMaxVertices];
+            _dependency = GetEntityQuery(typeof(Disintegrator), typeof(Renderer));
+            _managedVertexArray = new UnityEngine.Vector3[Renderer.kMaxVertices];
+            _managedNormalArray = new UnityEngine.Vector3[Renderer.kMaxVertices];
+            _managedIndexArray = new int[Renderer.kMaxVertices];
 
-            for(var i = 0; i < FlyRenderer.kMaxVertices; i++)
+            for(var i = 0; i < Renderer.kMaxVertices; i++)
             {
                 _managedIndexArray[i] = i;
             }
@@ -42,14 +42,14 @@ namespace Butterfly
             EntityManager.GetAllUniqueSharedComponentData(_renderers);
 
             var matrix = UnityEngine.Matrix4x4.identity;
-            var copySize = sizeof(float3) * FlyRenderer.kMaxVertices;
+            var copySize = sizeof(float3) * Renderer.kMaxVertices;
 
             var pVArray = UnsafeUtility.AddressOf(ref _managedVertexArray[0]);
             var pNArray = UnsafeUtility.AddressOf(ref _managedNormalArray[0]);
 
             foreach(var renderer in _renderers)
             {
-                if(renderer.meshInstance == null)
+                if(renderer.workMesh == null)
                 {
                     continue;
                 }
@@ -57,11 +57,11 @@ namespace Butterfly
                 UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
                 UnsafeUtility.MemCpy(pNArray, renderer.normals.GetUnsafePtr(), copySize);
 
-                renderer.meshInstance.vertices = _managedVertexArray;
-                renderer.meshInstance.normals = _managedNormalArray;
-                renderer.meshInstance.triangles = _managedIndexArray;
+                renderer.workMesh.vertices = _managedVertexArray;
+                renderer.workMesh.normals = _managedNormalArray;
+                renderer.workMesh.triangles = _managedIndexArray;
 
-                UnityEngine.Graphics.DrawMesh(renderer.meshInstance, matrix, renderer.settings.material, 0);
+                UnityEngine.Graphics.DrawMesh(renderer.workMesh, matrix, renderer.settings.material, 0);
             }
 
             _renderers.Clear();

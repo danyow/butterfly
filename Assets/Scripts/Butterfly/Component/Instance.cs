@@ -1,20 +1,20 @@
 using Unity.Entities;
 
-namespace Butterfly.FlyComponent
+namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct FlySpawn: ISharedComponentData, System.IEquatable<FlySpawn>
+    public struct Instance: ISharedComponentData, System.IEquatable<Instance>
     {
         public UnityEngine.Mesh templateMesh;
 
-        public bool Equals(FlySpawn other)
+        public bool Equals(Instance other)
         {
             return Equals(templateMesh, other.templateMesh);
         }
 
         public override bool Equals(object obj)
         {
-            return obj is FlySpawn other && Equals(other);
+            return obj is Instance other && Equals(other);
         }
 
         public override int GetHashCode()
