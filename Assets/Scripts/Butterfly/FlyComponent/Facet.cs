@@ -1,7 +1,7 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     /// <summary>
     /// 刻面?

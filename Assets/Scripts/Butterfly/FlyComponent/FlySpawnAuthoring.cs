@@ -1,4 +1,4 @@
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     public class FlySpawnAuthoring: UnityEngine.MonoBehaviour
     {

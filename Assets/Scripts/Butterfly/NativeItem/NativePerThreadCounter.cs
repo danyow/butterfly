@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs.LowLevel.Unsafe;
 
-namespace NativeItem
+namespace Butterfly.NativeItem
 {
     [StructLayout(LayoutKind.Sequential)]
     [NativeContainer]

@@ -1,4 +1,4 @@
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     public class FlySharedGeometryDataAuthoring: UnityEngine.MonoBehaviour
     {

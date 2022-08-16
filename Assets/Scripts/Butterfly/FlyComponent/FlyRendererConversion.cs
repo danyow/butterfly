@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     [UpdateAfter(typeof(FlyRenderSettingsConversion))]
     public class FlyRendererConversion: GameObjectConversionSystem

@@ -3,7 +3,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     public struct FlySharedGeometryData: ISharedComponentData, IEquatable<FlySharedGeometryData>
     {

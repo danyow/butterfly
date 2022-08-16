@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     public struct Fly: IComponentData
     {

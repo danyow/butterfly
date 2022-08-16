@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     [System.Serializable]
     public struct FlySpawn: ISharedComponentData, System.IEquatable<FlySpawn>

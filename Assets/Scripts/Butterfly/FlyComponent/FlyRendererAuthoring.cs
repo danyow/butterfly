@@ -1,7 +1,7 @@
 using Unity.Collections;
 using Unity.Mathematics;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     public class FlyRendererAuthoring: UnityEngine.MonoBehaviour
     {

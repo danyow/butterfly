@@ -4,7 +4,7 @@ using System.Threading;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace NativeItem
+namespace Butterfly.NativeItem
 {
     [StructLayout(LayoutKind.Sequential)] // 顺序的
     [NativeContainer]

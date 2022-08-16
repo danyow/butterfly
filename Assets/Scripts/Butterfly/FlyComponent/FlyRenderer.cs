@@ -1,9 +1,9 @@
-using NativeItem;
+using Butterfly.NativeItem;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
-namespace FlyComponent
+namespace Butterfly.FlyComponent
 {
     [System.Serializable]
     public struct FlyRenderer: ISharedComponentData, System.IEquatable<FlyRenderer>
