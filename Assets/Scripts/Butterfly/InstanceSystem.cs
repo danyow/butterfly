@@ -46,6 +46,63 @@ namespace Butterfly
             }
         }
 
+        /// <summary>
+        /// 实例化
+        /// </summary>
+        private void Instantiate(
+            LocalToWorld ltw,
+            NonUniformScale scale,
+            RenderSettings renderSettings,
+            UnityEngine.Vector3[] vertices,
+            int[] indices
+        )
+        {
+            // 计算变换矩阵。
+            var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value);
+
+            // 为这个查询创建一个渲染器。
+            var renderer = new Renderer
+            {
+                settings = renderSettings,
+                workMesh = new UnityEngine.Mesh(),
+                vertices = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
+                normals = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
+                counter = new NativeCounter(Allocator.Persistent),
+            };
+
+            _toBeDisposed.Add(renderer);
+
+            // 创建模板实体。
+            var template = EntityManager.CreateEntity(_archetype);
+            EntityManager.SetSharedComponentData(template, renderer);
+
+            // 克隆模板实体。
+            var clones = new NativeArray<Entity>(indices.Length / 3, Allocator.Temp);
+            EntityManager.Instantiate(template, clones);
+
+            // 设置初始数据。
+            for(var i = 0; i < clones.Length; i++)
+            {
+                var v1 = math.mul(matrix, new float4(vertices[indices[i * 3 + 0]], 1)).xyz;
+                var v2 = math.mul(matrix, new float4(vertices[indices[i * 3 + 1]], 1)).xyz;
+                var v3 = math.mul(matrix, new float4(vertices[indices[i * 3 + 2]], 1)).xyz;
+                var vc = (v1 + v2 + v3) / 3;
+
+                var entity = clones[i];
+
+                EntityManager.SetComponentData(
+                    entity,
+                    new Facet { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
+                );
+
+                EntityManager.SetComponentData(entity, new Translation { Value = vc, });
+            }
+
+            // 销毁模板对象。
+            EntityManager.DestroyEntity(template);
+            clones.Dispose();
+        }
+
         protected override void OnUpdate()
         {
             // 枚举所有实例数据条目。
@@ -77,43 +134,16 @@ namespace Butterfly
                 foreach(var instanceEntity in instanceEntities)
                 {
                     // 检索源数据。
-                    // var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity).Value;
-
-                    // 为这个组创建一个渲染器。
-                    var renderer = new Renderer
-                    {
-                        settings = EntityManager.GetSharedComponentData<RenderSettings>(instanceEntity),
-                        vertices = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
-                        normals = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
-                        workMesh = new UnityEngine.Mesh(),
-                        counter = new NativeCounter(Allocator.Persistent),
-                    };
-
-                    _toBeDisposed.Add(renderer);
-
                     var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity);
                     var scale = EntityManager.GetComponentData<NonUniformScale>(instanceEntity);
-                    var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value);
 
-                    // 填充实体。
-                    for(var vi = 0; vi < indices.Length; vi += 3)
-                    {
-                        var v1 = math.mul(matrix, new float4(vertices[indices[vi + 0]], 1)).xyz;
-                        var v2 = math.mul(matrix, new float4(vertices[indices[vi + 1]], 1)).xyz;
-                        var v3 = math.mul(matrix, new float4(vertices[indices[vi + 2]], 1)).xyz;
-                        var vc = (v1 + v2 + v3) / 3;
-
-                        var entity = EntityManager.CreateEntity(_archetype);
-
-                        EntityManager.SetComponentData(
-                            entity,
-                            new Facet { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
-                        );
-
-                        EntityManager.SetComponentData(entity, new Translation { Value = vc, });
-
-                        EntityManager.SetSharedComponentData(entity, renderer);
-                    }
+                    Instantiate(
+                        ltw,
+                        scale,
+                        EntityManager.GetSharedComponentData<RenderSettings>(instanceEntity),
+                        vertices,
+                        indices
+                    );
 
                     // 从实体中移除实例组件。
                     EntityManager.RemoveComponent(instanceEntity, typeof(Instance));
