@@ -16,7 +16,7 @@ namespace Butterfly
                .ForEach(
                     (ref Disintegrator disintegrator, ref Translation translation) =>
                     {
-                        var np = translation.Value * 2;
+                        var np = translation.Value * 6;
 
                         noise.snoise(np, out var grad1);
                         noise.snoise(np + 100, out var grad2);

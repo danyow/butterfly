@@ -8,7 +8,7 @@ namespace Butterfly.Component
     [System.Serializable]
     public struct Renderer: ISharedComponentData, System.IEquatable<Renderer>
     {
-        public const int kMaxVertices = 60000;
+        public const int kMaxVertices = 510000;
         public RenderSettings settings;
         public NativeArray<float3> vertices;
         public NativeArray<float3> normals;
