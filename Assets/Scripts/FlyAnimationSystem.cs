@@ -6,7 +6,6 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
 // ReSharper disable MemberCanBePrivate.Local
@@ -33,76 +32,42 @@ public partial class FlyAnimationSystem: SystemBase
     {
         EntityManager.GetAllUniqueSharedComponentData(_renderers);
 
-        // foreach(var renderer in _renderers)
-        // {
-        //     if(renderer.meshInstance == null)
-        //     {
-        //         continue;
-        //     }
-        //     _query.SetSharedComponentFilter(renderer);
-        //
-        //     // var job = new ConstructionJob { flies = _query.ToComponentDataArray<Fly>(), };
-        // }
-
-        ///////////////////////////////////////////////////
-
-        // Entities.ForEach(
-        //              (int entityInQueryIndex, ref Fly fly, ref Facet facet, ref Translation translation, ref FlyRenderer renderer) =>
-        //              {
-        //              }
-        //          )
-        //         .WithNativeDisableParallelForRestriction()
-        //         .WithoutBurst()
-        //         .Run();
-
-        ///////////////////////////////////////////////////
-
-        for(var i = 0; i < _renderers.Count; i++)
+        foreach(var renderer in _renderers)
         {
-            var renderer = _renderers[i];
             var vertices = renderer.vertices;
             var normals = renderer.normals;
-            var settings = renderer.settings;
 
             if(renderer.meshInstance == null)
             {
                 continue;
             }
 
-            _query.SetSharedComponentFilter(renderer);
-
             Entities
                .ForEach(
                     (int entityInQueryIndex, in Fly fly, in Facet facet, in Translation translation, in Entity entity) =>
                     {
-                        var setting = EntityManager.GetSharedComponentData<FlyRenderer>(entity);
-                        if(setting.Equals(renderer))
-                        {
-                            var p = translation.Value;
-                            var f = facet;
-                            var vi = entityInQueryIndex * 3;
+                        var p = translation.Value;
+                        var f = facet;
+                        var vi = entityInQueryIndex * 3;
 
-                            var v1 = p + f.vertex1;
-                            var v2 = p + f.vertex2;
-                            var v3 = p + f.vertex3;
-                            var n = math.normalize(math.cross(v2 - v1, v3 - v1));
+                        var v1 = p + f.vertex1;
+                        var v2 = p + f.vertex2;
+                        var v3 = p + f.vertex3;
+                        var n = math.normalize(math.cross(v2 - v1, v3 - v1));
 
-                            vertices[vi + 0] = v1;
-                            vertices[vi + 1] = v2;
-                            vertices[vi + 2] = v3;
+                        vertices[vi + 0] = v1;
+                        vertices[vi + 1] = v2;
+                        vertices[vi + 2] = v3;
 
-                            normals[vi + 0] = n;
-                            normals[vi + 1] = n;
-                            normals[vi + 2] = n;
-                        }
+                        normals[vi + 0] = n;
+                        normals[vi + 1] = n;
+                        normals[vi + 2] = n;
                     }
                 )
                .WithNativeDisableParallelForRestriction(vertices)
                .WithNativeDisableParallelForRestriction(normals)
+               .WithSharedComponentFilter(renderer)
                .WithStoreEntityQueryInField(ref _query)
-
-                // .WithBurst()
-                // .ScheduleParallel();
                .WithoutBurst()
                .Run();
         }

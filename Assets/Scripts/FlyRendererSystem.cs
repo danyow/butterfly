@@ -14,8 +14,6 @@ public class FlyRendererSystem: ComponentSystem
     private UnityEngine.Vector3[] _managedNormalArray;
     private int[] _managedIndexArray;
 
-    private int _testIndex;
-
     protected override void OnCreate()
     {
         _dependency = GetEntityQuery(typeof(Fly), typeof(FlyRenderer));
@@ -51,22 +49,6 @@ public class FlyRendererSystem: ComponentSystem
             if(renderer.meshInstance == null)
             {
                 continue;
-            }
-
-            _testIndex++;
-            if(math.ceil(_testIndex / 1000f) % 2 == 0)
-            {
-                if(renderer.settings.material.name == "Blue")
-                {
-                    continue;
-                }
-            }
-            else
-            {
-                if(renderer.settings.material.name == "Red")
-                {
-                    continue;
-                }
             }
 
             UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
