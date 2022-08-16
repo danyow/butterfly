@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using FlyComponent;
+using NativeItem;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -15,7 +16,7 @@ public class FlySpawnSystem: ComponentSystem
     private EntityArchetype _flyArchetype;
 
     // 分配清单
-    private readonly List<NativeArray<float3>> _toBeDisposed = new List<NativeArray<float3>>();
+    private readonly List<FlyRenderer> _toBeDisposed = new List<FlyRenderer>();
 
     protected override void OnCreate()
     {
@@ -34,10 +35,17 @@ public class FlySpawnSystem: ComponentSystem
 
     protected override void OnDestroy()
     {
-        for(var i = 0; i < _toBeDisposed.Count; i++)
+        foreach(var renderer in _toBeDisposed)
         {
-            _toBeDisposed[i].Dispose();
+            renderer.vertices.Dispose();
+            renderer.normals.Dispose();
+            renderer.counter.Dispose();
         }
+
+        // for(var i = 0; i < _toBeDisposed.Count; i++)
+        // {
+        //     _toBeDisposed[i].Dispose();
+        // }
     }
 
     protected override void OnUpdate()
@@ -79,10 +87,10 @@ public class FlySpawnSystem: ComponentSystem
                     vertices = new NativeArray<float3>(FlyRenderer.kMaxVertices, Allocator.Persistent),
                     normals = new NativeArray<float3>(FlyRenderer.kMaxVertices, Allocator.Persistent),
                     meshInstance = new UnityEngine.Mesh(),
+                    counter = new NativeCounter(Allocator.Persistent),
                 };
 
-                _toBeDisposed.Add(renderer.vertices);
-                _toBeDisposed.Add(renderer.normals);
+                _toBeDisposed.Add(renderer);
 
                 // 填充Fly实体
                 for(var vi = 0; vi < indices.Length; vi += 3)
