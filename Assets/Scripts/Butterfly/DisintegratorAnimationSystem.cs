@@ -9,7 +9,9 @@ namespace Butterfly
     {
         protected override void OnUpdate()
         {
-            var dt = Time.DeltaTime;
+            var time = (float)Time.ElapsedTime;
+            var deltaTime = Time.DeltaTime;
+            UnityEngine.Debug.Log($"{time} ==> {deltaTime}");
             Entities
                .ForEach(
                     (ref Disintegrator disintegrator, ref Translation translation) =>
@@ -17,9 +19,11 @@ namespace Butterfly
                         var np = translation.Value * 2;
 
                         noise.snoise(np, out var grad1);
-                        noise.snoise(np + 10, out var grad2);
+                        noise.snoise(np + 100, out var grad2);
 
                         var acc = math.cross(grad1, grad2) * 0.02f;
+
+                        var dt = deltaTime * math.saturate(time - 2 + translation.Value.y * 2);
 
                         translation.Value += disintegrator.velocity * dt;
                         disintegrator.life += dt;

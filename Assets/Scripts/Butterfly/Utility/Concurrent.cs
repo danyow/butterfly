@@ -1,6 +1,6 @@
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace Butterfly.NativeItem
+namespace Butterfly.Utility
 {
     [NativeContainer]
     [NativeContainerIsAtomicWriteOnly] // 原生容器是原子只写的

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Butterfly.Component;
-using Butterfly.NativeItem;
+using Butterfly.Utility;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
