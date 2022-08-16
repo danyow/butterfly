@@ -41,7 +41,7 @@ public partial class FlyAnimationSystem: SystemBase
             {
                 continue;
             }
-
+            var spawnTime = (float)Time.ElapsedTime;
             Entities
                .ForEach(
                     (int entityInQueryIndex, in Fly fly, in Facet facet, in Translation translation, in Entity entity) =>
@@ -53,6 +53,12 @@ public partial class FlyAnimationSystem: SystemBase
                         var v1 = p + f.vertex1;
                         var v2 = p + f.vertex2;
                         var v3 = p + f.vertex3;
+
+                        var offs = new float3(0, 0, spawnTime);
+                        v1 *= 1 + noise.cnoise(v1 * 2 + offs) * 0.2f;
+                        v2 *= 1 + noise.cnoise(v2 * 2 + offs) * 0.2f;
+                        v3 *= 1 + noise.cnoise(v3 * 2 + offs) * 0.2f;
+
                         var n = math.normalize(math.cross(v2 - v1, v3 - v1));
 
                         vertices[vi + 0] = v1;
@@ -68,8 +74,7 @@ public partial class FlyAnimationSystem: SystemBase
                .WithNativeDisableParallelForRestriction(normals)
                .WithSharedComponentFilter(renderer)
                .WithStoreEntityQueryInField(ref _query)
-               .WithoutBurst()
-               .Run();
+               .ScheduleParallel();
         }
 
         _renderers.Clear();
