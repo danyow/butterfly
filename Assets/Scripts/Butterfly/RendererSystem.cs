@@ -69,6 +69,7 @@ namespace Butterfly
                 if(!meshIsReady)
                 {
                     renderer.workMesh.triangles = _managedIndexArray;
+                    renderer.workMesh.bounds = new UnityEngine.Bounds(UnityEngine.Vector3.zero, UnityEngine.Vector3.one * 1000);
                 }
 
                 UnityEngine.Graphics.DrawMesh(renderer.workMesh, matrix, renderer.settings.material, 0);
