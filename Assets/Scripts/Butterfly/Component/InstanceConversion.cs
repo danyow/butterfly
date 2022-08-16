@@ -12,12 +12,6 @@ namespace Butterfly.Component
                         entity,
                         new Instance { templateMesh = authoring.templateMesh, }
                     );
-
-                    // 加入缩放
-                    DstEntityManager.AddComponentData(
-                        entity,
-                        new Unity.Transforms.NonUniformScale { Value = authoring.transform.lossyScale, }
-                    );
                 }
             );
         }
