@@ -10,17 +10,23 @@ namespace Butterfly
         protected override void OnUpdate()
         {
             var dt = Time.DeltaTime;
-            Entities.ForEach(
-                         (ref Disintegrator disintegrator, ref Translation translation) =>
-                         {
-                             noise.snoise(translation.Value, out var d1);
-                             noise.snoise(translation.Value + 10, out var d2);
+            Entities
+               .ForEach(
+                    (ref Disintegrator disintegrator, ref Translation translation) =>
+                    {
+                        var np = translation.Value * 2;
 
-                             translation.Value += math.cross(d1, d2) * dt * 0.02f;
-                             disintegrator.life += dt;
-                         }
-                     )
-                    .ScheduleParallel();
+                        noise.snoise(np, out var grad1);
+                        noise.snoise(np + 10, out var grad2);
+
+                        var acc = math.cross(grad1, grad2) * 0.02f;
+
+                        translation.Value += disintegrator.velocity * dt;
+                        disintegrator.life += dt;
+                        disintegrator.velocity += acc * dt;
+                    }
+                )
+               .ScheduleParallel();
         }
     }
 }
