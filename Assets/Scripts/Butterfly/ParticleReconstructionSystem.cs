@@ -25,11 +25,16 @@ namespace Butterfly
         private Vector3[] _managedNormalArray;
         private int[] _managedIndexArray;
 
+        private const float kSize = 0.005f;
+
         protected override void OnCreate()
         {
-            base.OnCreate();
-
-            _query = GetEntityQuery(typeof(Particle), typeof(Triangle), typeof(Translation), typeof(Renderer));
+            _query = GetEntityQuery(
+                typeof(Particle),
+                typeof(Triangle),
+                typeof(Translation),
+                typeof(Renderer) // 共享的
+            );
         }
 
         protected override void OnUpdate()
@@ -39,51 +44,62 @@ namespace Butterfly
             for(var i = 0; i < _renderers.Count; i++)
             {
                 var renderer = _renderers[i];
-                var vertices = renderer.vertices;
-                var normals = renderer.normals;
 
                 if(renderer.workMesh == null)
                 {
                     continue;
                 }
+
+                // 重置三角计数器。
                 renderer.counter.Count = 0;
+
+                // 把需要的变量先作为临时变量
+                var vertices = renderer.vertices;
+                var normals = renderer.normals;
                 NativeCounter.Concurrent counter = renderer.counter;
 
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Triangle facet, in Translation translation, in Particle disintegrator) =>
+                        (int entityInQueryIndex, in Triangle triangle, in Translation translation, in Particle disintegrator) =>
                         {
-                            var p = translation.Value;
-                            var t = disintegrator.life;
-
-                            var vz = math.normalize(disintegrator.velocity + 0.001f);
-                            var vx = math.normalize(math.cross(new float3(0, 1, 0), vz));
-                            var vy = math.cross(vz, vx);
-
-                            var f = facet;
+                            var pos = translation.Value;
+                            var time = disintegrator.life;
 
                             var freq = 8 + Random.Value01((uint)entityInQueryIndex) * 20;
-                            vx *= 0.01f;
-                            vy *= 0.01f * math.sin(freq * t);
-                            vz *= 0.01f;
+                            var flap = math.sin(freq * time);
 
-                            var v1 = p;
-                            var v2 = p - vx - vz + vy;
-                            var v3 = p - vx + vz + vy;
-                            var v4 = p + vx + vz + vy;
-                            var v5 = p + vx - vz + vy;
+                            var az = math.normalize(disintegrator.velocity + 0.001f);
+                            var ax = math.normalize(math.cross(new float3(0, 1, 0), az));
+                            var ay = math.cross(az, ax);
 
-                            var tf = math.saturate(t);
-                            v1 = math.lerp(p + f.vertex1, v1, tf);
-                            v2 = math.lerp(p + f.vertex2, v2, tf);
-                            v3 = math.lerp(p + f.vertex3, v3, tf);
-                            v4 = math.lerp(p + f.vertex2, v4, tf);
-                            v5 = math.lerp(p + f.vertex3, v5, tf);
+                            ax = math.normalize(ax) * kSize;
+                            ay = math.normalize(ay) * kSize * flap;
+                            az = math.normalize(az) * kSize;
 
-                            AddTriangle(v1, v2, v3, ref counter, ref vertices, ref normals);
-                            AddTriangle(v1, v3, v2, ref counter, ref vertices, ref normals);
-                            AddTriangle(v1, v4, v5, ref counter, ref vertices, ref normals);
-                            AddTriangle(v1, v5, v4, ref counter, ref vertices, ref normals);
+                            var face = triangle;
+                            var va1 = pos + face.vertex1;
+                            var va2 = pos + face.vertex2;
+                            var va3 = pos + face.vertex3;
+
+                            var vb1 = pos + az * 0.2f;
+                            var vb2 = pos - az * 0.2f;
+                            var vb3 = pos - ax + ay + az;
+                            var vb4 = pos - ax + ay - az;
+                            var vb5 = vb3 + ax * 2;
+                            var vb6 = vb4 + ax * 2;
+
+                            var pt = math.saturate(time);
+                            var v1 = math.lerp(va1, vb1, pt);
+                            var v2 = math.lerp(va2, vb2, pt);
+                            var v3 = math.lerp(va3, vb3, pt);
+                            var v4 = math.lerp(va3, vb4, pt);
+                            var v5 = math.lerp(va3, vb5, pt);
+                            var v6 = math.lerp(va3, vb6, pt);
+
+                            AddTriangle(v1, v2, v5, counter, vertices, normals);
+                            AddTriangle(v5, v2, v6, counter, vertices, normals);
+                            AddTriangle(v3, v4, v1, counter, vertices, normals);
+                            AddTriangle(v1, v4, v2, counter, vertices, normals);
                         }
                     )
                    .WithNativeDisableParallelForRestriction(vertices)
@@ -105,9 +121,9 @@ namespace Butterfly
             float3 v1,
             float3 v2,
             float3 v3,
-            ref NativeCounter.Concurrent counter,
-            ref NativeArray<float3> vertices,
-            ref NativeArray<float3> normals
+            NativeCounter.Concurrent counter,
+            NativeArray<float3> vertices,
+            NativeArray<float3> normals
         )
         {
             var n = MakeNormal(v1, v2, v3);
