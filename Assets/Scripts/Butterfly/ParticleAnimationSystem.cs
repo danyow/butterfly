@@ -5,7 +5,7 @@ using Unity.Transforms;
 
 namespace Butterfly
 {
-    public partial class DisintegratorAnimationSystem: SystemBase
+    public partial class ParticleAnimationSystem: SystemBase
     {
         protected override void OnUpdate()
         {
@@ -13,7 +13,7 @@ namespace Butterfly
             var deltaTime = Time.DeltaTime;
             Entities
                .ForEach(
-                    (ref Disintegrator disintegrator, ref Translation translation) =>
+                    (ref Particle disintegrator, ref Translation translation) =>
                     {
                         var np = translation.Value * 6;
 

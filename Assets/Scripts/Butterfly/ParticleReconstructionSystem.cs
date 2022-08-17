@@ -14,8 +14,8 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    [UpdateAfter(typeof(DisintegratorAnimationSystem))]
-    public partial class DisintegratorReconstructionSystem: SystemBase
+    [UpdateAfter(typeof(ParticleAnimationSystem))]
+    public partial class ParticleReconstructionSystem: SystemBase
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
 
@@ -29,7 +29,7 @@ namespace Butterfly
         {
             base.OnCreate();
 
-            _query = GetEntityQuery(typeof(Disintegrator), typeof(Facet), typeof(Translation), typeof(Renderer));
+            _query = GetEntityQuery(typeof(Particle), typeof(Triangle), typeof(Translation), typeof(Renderer));
         }
 
         protected override void OnUpdate()
@@ -51,7 +51,7 @@ namespace Butterfly
 
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Facet facet, in Translation translation, in Disintegrator disintegrator) =>
+                        (int entityInQueryIndex, in Triangle facet, in Translation translation, in Particle disintegrator) =>
                         {
                             var p = translation.Value;
                             var t = disintegrator.life;

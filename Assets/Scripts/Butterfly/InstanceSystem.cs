@@ -34,8 +34,8 @@ namespace Butterfly
                 typeof(RenderSettings)
             );
             _archetype = EntityManager.CreateArchetype(
-                typeof(Disintegrator),
-                typeof(Facet),
+                typeof(Particle),
+                typeof(Triangle),
                 typeof(Translation),
                 typeof(Renderer)
             );
@@ -147,7 +147,7 @@ namespace Butterfly
 
                 EntityManager.SetComponentData(
                     entity,
-                    new Facet { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
+                    new Triangle { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
                 );
 
                 EntityManager.SetComponentData(entity, new Translation { Value = vc, });

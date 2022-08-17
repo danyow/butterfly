@@ -4,9 +4,9 @@ using Unity.Mathematics;
 namespace Butterfly.Component
 {
     /// <summary>
-    /// 刻面?
+    /// 三角形
     /// </summary>
-    public struct Facet: IComponentData
+    public struct Triangle: IComponentData
     {
         public float3 vertex1;
         public float3 vertex2;

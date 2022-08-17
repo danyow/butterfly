@@ -7,7 +7,7 @@ using Unity.Mathematics;
 // ReSharper disable NotAccessedField.Local
 namespace Butterfly
 {
-    [UpdateAfter(typeof(DisintegratorReconstructionSystem))]
+    [UpdateAfter(typeof(ParticleReconstructionSystem))]
     public class FlyRendererSystem: ComponentSystem
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
@@ -20,7 +20,7 @@ namespace Butterfly
 
         protected override void OnCreate()
         {
-            _dependency = GetEntityQuery(typeof(Disintegrator), typeof(Renderer));
+            _dependency = GetEntityQuery(typeof(Particle), typeof(Renderer));
 
             // 分配临时托管数组。
             _vertexArray = new UnityEngine.Vector3[Renderer.MaxVertices];
