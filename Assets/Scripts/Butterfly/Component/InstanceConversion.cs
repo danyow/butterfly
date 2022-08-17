@@ -12,6 +12,12 @@ namespace Butterfly.Component
                         entity,
                         new Instance { templateMesh = authoring.templateMesh, }
                     );
+
+                    // 加入缩放 否者为1的缩放无法获取
+                    DstEntityManager.AddComponentData(
+                        entity,
+                        new Unity.Transforms.NonUniformScale { Value = authoring.transform.lossyScale, }
+                    );
                 }
             );
         }

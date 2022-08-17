@@ -5,7 +5,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 using Renderer = Butterfly.Component.Renderer;
 using RenderSettings = Butterfly.Component.RenderSettings;
 
@@ -83,9 +82,10 @@ namespace Butterfly
                 {
                     // 检索源数据。
                     var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity);
-
+                    var scale = EntityManager.GetComponentData<NonUniformScale>(instanceEntity);
+                    var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value);
                     CreateEntitiesOverMesh(
-                        ltw,
+                        matrix,
                         EntityManager.GetSharedComponentData<RenderSettings>(instanceEntity),
                         vertices,
                         indices
@@ -109,9 +109,9 @@ namespace Butterfly
         /// 实例化
         /// </summary>
         private void CreateEntitiesOverMesh(
-            LocalToWorld ltw,
+            float4x4 matrix,
             RenderSettings renderSettings,
-            IReadOnlyList<Vector3> vertices,
+            IReadOnlyList<UnityEngine.Vector3> vertices,
             IReadOnlyList<int> indices
         )
         {
@@ -138,9 +138,9 @@ namespace Butterfly
             // 设置初始数据。
             for(var i = 0; i < clones.Length; i++)
             {
-                var v1 = math.mul(ltw.Value, new float4(vertices[indices[i * 3 + 0]], 1)).xyz;
-                var v2 = math.mul(ltw.Value, new float4(vertices[indices[i * 3 + 1]], 1)).xyz;
-                var v3 = math.mul(ltw.Value, new float4(vertices[indices[i * 3 + 2]], 1)).xyz;
+                var v1 = math.mul(matrix, new float4(vertices[indices[i * 3 + 0]], 1)).xyz;
+                var v2 = math.mul(matrix, new float4(vertices[indices[i * 3 + 1]], 1)).xyz;
+                var v3 = math.mul(matrix, new float4(vertices[indices[i * 3 + 2]], 1)).xyz;
                 var vc = (v1 + v2 + v3) / 3;
 
                 var entity = clones[i];
