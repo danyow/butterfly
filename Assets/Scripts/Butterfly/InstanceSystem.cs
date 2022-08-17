@@ -120,8 +120,8 @@ namespace Butterfly
             {
                 settings = renderSettings,
                 workMesh = new UnityEngine.Mesh(),
-                vertices = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
-                normals = new NativeArray<float3>(Renderer.kMaxVertices, Allocator.Persistent),
+                vertices = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
+                normals = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
                 counter = new NativeCounter(Allocator.Persistent),
             };
 

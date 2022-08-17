@@ -11,7 +11,6 @@ namespace Butterfly
         {
             var time = (float)Time.ElapsedTime;
             var deltaTime = Time.DeltaTime;
-            UnityEngine.Debug.Log($"{time} ==> {deltaTime}");
             Entities
                .ForEach(
                     (ref Disintegrator disintegrator, ref Translation translation) =>
