@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using Random = Butterfly.Utility.Random;
 using Renderer = Butterfly.Component.Renderer;
 using RenderSettings = Butterfly.Component.RenderSettings;
 
@@ -103,8 +104,6 @@ namespace Butterfly
 
 #region 内部方法
 
-#endregion
-
         /// <summary>
         /// 实例化
         /// </summary>
@@ -151,11 +150,15 @@ namespace Butterfly
                 );
 
                 EntityManager.SetComponentData(entity, new Translation { Value = vc, });
+
+                EntityManager.SetComponentData(entity, new Particle { random = Random.Value01((uint)i), });
             }
 
             // 销毁模板对象。
             EntityManager.DestroyEntity(template);
             clones.Dispose();
         }
+
+#endregion
     }
 }

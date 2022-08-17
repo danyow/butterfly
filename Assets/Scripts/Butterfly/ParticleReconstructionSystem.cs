@@ -5,7 +5,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
-using Random = Butterfly.Utility.Random;
 using Vector3 = UnityEngine.Vector3;
 
 // ReSharper disable MemberCanBePrivate.Local
@@ -60,23 +59,24 @@ namespace Butterfly
 
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Triangle triangle, in Translation translation, in Particle disintegrator) =>
+                        (int entityInQueryIndex, in Triangle triangle, in Translation translation, in Particle particle) =>
                         {
-                            var pos = translation.Value;
-                            var time = disintegrator.life;
+                            var p = particle;
 
-                            var freq = 8 + Random.Value01((uint)entityInQueryIndex) * 20;
-                            var flap = math.sin(freq * time);
-
-                            var az = math.normalize(disintegrator.velocity + 0.001f);
-                            var ax = math.normalize(math.cross(new float3(0, 1, 0), az));
+                            var az = particle.velocity + 0.001f;
+                            var ax = math.cross(new float3(0, 1, 0), az);
                             var ay = math.cross(az, ax);
+
+                            var freq = 8 + p.random * 20;
+                            var flap = math.sin(freq * p.life);
 
                             ax = math.normalize(ax) * kSize;
                             ay = math.normalize(ay) * kSize * flap;
                             az = math.normalize(az) * kSize;
 
+                            var pos = translation.Value;
                             var face = triangle;
+
                             var va1 = pos + face.vertex1;
                             var va2 = pos + face.vertex2;
                             var va3 = pos + face.vertex3;
@@ -88,7 +88,7 @@ namespace Butterfly
                             var vb5 = vb3 + ax * 2;
                             var vb6 = vb4 + ax * 2;
 
-                            var pt = math.saturate(time);
+                            var pt = math.saturate(p.life);
                             var v1 = math.lerp(va1, vb1, pt);
                             var v2 = math.lerp(va2, vb2, pt);
                             var v3 = math.lerp(va3, vb3, pt);
@@ -112,11 +112,6 @@ namespace Butterfly
             _renderers.Clear();
         }
 
-        private static float3 MakeNormal(float3 a, float3 b, float3 c)
-        {
-            return math.normalize(math.cross(b - a, c - a));
-        }
-
         private static void AddTriangle(
             float3 v1,
             float3 v2,
@@ -126,16 +121,13 @@ namespace Butterfly
             NativeArray<float3> normals
         )
         {
-            var n = MakeNormal(v1, v2, v3);
-            var vi = counter.Increment() * 3;
+            var i = counter.Increment() * 3;
 
-            vertices[vi + 0] = v1;
-            vertices[vi + 1] = v2;
-            vertices[vi + 2] = v3;
+            vertices[i + 0] = v1;
+            vertices[i + 1] = v2;
+            vertices[i + 2] = v3;
 
-            normals[vi + 0] = n;
-            normals[vi + 1] = n;
-            normals[vi + 2] = n;
+            normals[i + 0] = normals[i + 1] = normals[i + 2] = math.normalize(math.cross(v2 - v1, v3 - v1));
         }
     }
 }
