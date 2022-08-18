@@ -13,7 +13,6 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    [UpdateAfter(typeof(ParticleAnimationSystem))]
     public partial class ParticleReconstructionSystem: SystemBase
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();

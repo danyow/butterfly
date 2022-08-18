@@ -1,6 +1,6 @@
 namespace Butterfly.Component
 {
-    [UnityEngine.AddComponentMenu("Butterfly Render Settings")]
+    [UnityEngine.AddComponentMenu("Butterfly/Butterfly Render Settings")]
     public class RenderSettingsAuthoring: UnityEngine.MonoBehaviour
     {
         public UnityEngine.Material material;
