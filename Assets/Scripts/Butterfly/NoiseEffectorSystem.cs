@@ -28,7 +28,7 @@ namespace Butterfly
             {
                 var entity = entities[i];
                 var effector = EntityManager.GetComponentData<NoiseEffector>(entity);
-                var ltw = EntityManager.GetComponentData<LocalToWorld>(entity);
+                var wtl = EntityManager.GetComponentData<WorldToLocal>(entity);
 
                 Entities
                    .ForEach(
@@ -37,7 +37,7 @@ namespace Butterfly
                             var pos = translation.Value;
                             var acc = DFNoise(pos, effector) * effector.amplitude;
 
-                            var dt = deltaTime * Amplitude(pos, ltw.Value);
+                            var dt = deltaTime * Amplitude(pos, wtl.Value);
 
                             particle.velocity += acc * dt;
                             particle.life += dt;

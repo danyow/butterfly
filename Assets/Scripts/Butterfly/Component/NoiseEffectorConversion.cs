@@ -12,6 +12,7 @@ namespace Butterfly.Component
                         entity,
                         new NoiseEffector { frequency = authoring.frequency, amplitude = authoring.amplitude, }
                     );
+                    DstEntityManager.AddComponent<Unity.Transforms.WorldToLocal>(entity);
                 }
             );
         }
