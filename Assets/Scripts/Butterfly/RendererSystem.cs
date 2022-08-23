@@ -43,53 +43,69 @@ namespace Butterfly
 
         protected override unsafe void OnUpdate()
         {
-            var matrix = UnityEngine.Matrix4x4.identity;
-            var copySize = sizeof(float3) * Renderer.MaxVertices;
-
-            // 指向临时托管数组的指针
-            var pVArray = UnsafeUtility.AddressOf(ref _vertexArray[0]);
-            var pNArray = UnsafeUtility.AddressOf(ref _normalArray[0]);
+            var identityMatrix = UnityEngine.Matrix4x4.identity;
 
             // 迭代渲染器组件。
             EntityManager.GetAllUniqueSharedComponentData(_renderers);
 
             foreach(var renderer in _renderers)
             {
+                var mesh = renderer.workMesh;
+
                 // 如果没有网格（== 默认空数据），则不执行任何操作
-                if(renderer.workMesh == null)
+                if(mesh == null)
                 {
                     continue;
                 }
 
                 // 检查网格是否已被使用。
-                var meshIsReady = renderer.workMesh.vertexCount > 0;
+                var meshIsReady = mesh.vertexCount > 0;
 
                 if(!meshIsReady)
                 {
                     // Mesh初始设置：32位索引，动态更新
-                    renderer.workMesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+                    mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
                     // 优化网格以进行频繁更新。
-                    renderer.workMesh.MarkDynamic();
+                    mesh.MarkDynamic();
                 }
 
-                // 通过托管数组更新顶点/法线数组。
-                UnsafeUtility.MemCpy(pVArray, renderer.vertices.GetUnsafePtr(), copySize);
-                UnsafeUtility.MemCpy(pNArray, renderer.normals.GetUnsafePtr(), copySize);
-                renderer.workMesh.vertices = _vertexArray;
-                renderer.workMesh.normals = _normalArray;
+                // 将顶点/法线数据复制到托管缓冲区中。
+                var vertexCount = renderer.counter.count * 3;
+
+                UnsafeUtility.MemCpy(
+                    UnsafeUtility.AddressOf(ref _vertexArray[0]),
+                    renderer.vertices.GetUnsafePtr(),
+                    sizeof(float3) * vertexCount
+                );
+
+                UnsafeUtility.MemCpy(
+                    UnsafeUtility.AddressOf(ref _normalArray[0]),
+                    renderer.normals.GetUnsafePtr(),
+                    sizeof(float3) * vertexCount
+                );
+
+                // 清除剩余的托管顶点缓冲区。
+                UnsafeUtility.MemClear(
+                    UnsafeUtility.AddressOf(ref _vertexArray[vertexCount]),
+                    sizeof(float3) * (Renderer.MaxVertices - vertexCount)
+                );
+
+                // 通过托管缓冲区更新顶点/法线数组。
+                mesh.vertices = _vertexArray;
+                mesh.normals = _normalArray;
 
                 if(!meshIsReady)
                 {
                     // 首次设置默认索引数组。
-                    renderer.workMesh.triangles = _indexArray;
+                    mesh.triangles = _indexArray;
 
                     // 设置一个大的边界框以避免被剔除。
-                    renderer.workMesh.bounds = new UnityEngine.Bounds(UnityEngine.Vector3.zero, UnityEngine.Vector3.one * 1000);
+                    mesh.bounds = new UnityEngine.Bounds(UnityEngine.Vector3.zero, UnityEngine.Vector3.one * 1000);
                 }
 
                 // 绘制调用
-                UnityEngine.Graphics.DrawMesh(renderer.workMesh, matrix, renderer.settings.material, 0);
+                UnityEngine.Graphics.DrawMesh(mesh, identityMatrix, renderer.settings.material, 0);
             }
 
             _renderers.Clear();
