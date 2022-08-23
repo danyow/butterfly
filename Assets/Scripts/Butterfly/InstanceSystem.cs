@@ -1,3 +1,8 @@
+#define DEBUG_DIAGNOSTICS
+
+#if DEBUG_DIAGNOSTICS
+using System.Diagnostics;
+#endif
 using System.Collections.Generic;
 using Butterfly.Component;
 using Butterfly.Utility;
@@ -55,6 +60,12 @@ namespace Butterfly
 
         protected override void OnUpdate()
         {
+#if DEBUG_DIAGNOSTICS
+            var stopwatch = new Stopwatch();
+            stopwatch.Reset();
+            stopwatch.Start();
+#endif
+
             // 枚举所有实例数据条目。
             EntityManager.GetAllUniqueSharedComponentData(_instanceDataList);
 
@@ -100,6 +111,11 @@ namespace Butterfly
                 instanceEntities.Dispose();
             }
             _instanceDataList.Clear();
+#if DEBUG_DIAGNOSTICS
+            stopwatch.Stop();
+            var time = 1000f * stopwatch.ElapsedTicks / Stopwatch.Frequency;
+            UnityEngine.Debug.Log($"Instantiation: {time}ms");
+#endif
         }
 
 #endregion
