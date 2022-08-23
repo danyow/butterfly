@@ -25,7 +25,7 @@ namespace Butterfly.Utility
 #endif
 
         // 跟踪分配内存的位置
-        private Allocator m_AllocatorLabel;
+        private readonly Allocator m_AllocatorLabel;
 
         public NativeCounter(Allocator label)
         {
@@ -48,7 +48,7 @@ namespace Butterfly.Utility
 #endif
 
             // 将 Count 初始化为0，避免数据未初始化
-            Count = 0;
+            count = 0;
         }
 
         // 增量
@@ -62,7 +62,7 @@ namespace Butterfly.Utility
             (*m_Counter)++;
         }
 
-        public int Count
+        public int count
         {
             get
             {
@@ -84,7 +84,7 @@ namespace Butterfly.Utility
             }
         }
 
-        public bool IsCreated => m_Counter != null;
+        public bool isCreated => m_Counter != null;
 
         /// <summary>
         /// 处置

@@ -25,7 +25,7 @@ namespace Butterfly.Utility
 #endif
 
         // 跟踪分配内存的位置
-        private Allocator m_AllocatorLabel;
+        private readonly Allocator m_AllocatorLabel;
 
         public const int IntsPerCacheLine = JobsUtility.CacheLineSize / sizeof(int);
 

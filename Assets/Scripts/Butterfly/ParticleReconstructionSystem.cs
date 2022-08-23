@@ -49,7 +49,7 @@ namespace Butterfly
                 }
 
                 // 重置三角计数器。
-                renderer.counter.Count = 0;
+                renderer.counter.count = 0;
 
                 // 把需要的变量先作为临时变量
                 var vertices = renderer.vertices;

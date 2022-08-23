@@ -3,6 +3,7 @@ using Unity.Entities;
 namespace Butterfly
 {
     [UpdateBefore(typeof(NoiseEffectorSystem))]
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class NoiseEffectorAnimationSystem: SystemBase
     {
         protected override void OnUpdate()
@@ -10,7 +11,7 @@ namespace Butterfly
             var dt = Time.DeltaTime;
             Entities
                .ForEach(
-                    (Butterfly.Component.NoiseEffector effector, ref Unity.Transforms.Translation translation) =>
+                    (ref Unity.Transforms.Translation translation, in Component.NoiseEffector effector) =>
                     {
                         translation = new Unity.Transforms.Translation
                         {

@@ -16,7 +16,7 @@ namespace Butterfly.Utility
 
         // 当前工作线程索引，它必须使用这个确切的名称，因为它是注入的
         [NativeSetThreadIndex]
-        int m_ThreadIndex;
+        private int m_ThreadIndex;
 
         public static implicit operator Concurrent(NativePerThreadCounter cnt)
         {

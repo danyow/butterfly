@@ -5,6 +5,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 using Random = Butterfly.Utility.Random;
 using Renderer = Butterfly.Component.Renderer;
 using RenderSettings = Butterfly.Component.RenderSettings;
@@ -45,6 +46,7 @@ namespace Butterfly
         {
             foreach(var renderer in _toBeDisposed)
             {
+                // ReSharper disable PossiblyImpureMethodCallOnReadonlyVariable
                 renderer.vertices.Dispose();
                 renderer.normals.Dispose();
                 renderer.counter.Dispose();
@@ -110,7 +112,7 @@ namespace Butterfly
         private void CreateEntitiesOverMesh(
             float4x4 matrix,
             RenderSettings renderSettings,
-            IReadOnlyList<UnityEngine.Vector3> vertices,
+            IReadOnlyList<Vector3> vertices,
             IReadOnlyList<int> indices
         )
         {
@@ -118,7 +120,7 @@ namespace Butterfly
             var renderer = new Renderer
             {
                 settings = renderSettings,
-                workMesh = new UnityEngine.Mesh(),
+                workMesh = new Mesh(),
                 vertices = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
                 normals = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
                 counter = new NativeCounter(Allocator.Persistent),

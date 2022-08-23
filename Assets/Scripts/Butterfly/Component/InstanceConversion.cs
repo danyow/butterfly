@@ -18,6 +18,8 @@ namespace Butterfly.Component
                         entity,
                         new Unity.Transforms.NonUniformScale { Value = authoring.transform.lossyScale, }
                     );
+
+                    DstEntityManager.AddComponent<Unity.Transforms.LocalToWorld>(entity);
                 }
             );
         }
