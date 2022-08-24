@@ -52,10 +52,9 @@ namespace Butterfly
             foreach(var renderer in _toBeDisposed)
             {
                 // ReSharper disable PossiblyImpureMethodCallOnReadonlyVariable
-                renderer.vertices.Dispose();
-                renderer.normals.Dispose();
                 renderer.counter.Dispose();
             }
+            _toBeDisposed.Clear();
         }
 
         protected override void OnUpdate()
@@ -137,8 +136,8 @@ namespace Butterfly
             {
                 settings = renderSettings,
                 workMesh = new Mesh(),
-                vertices = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
-                normals = new NativeArray<float3>(Renderer.MaxVertices, Allocator.Persistent),
+                vertices = new Vector3[Renderer.MaxVertices],
+                normals = new Vector3[Renderer.MaxVertices],
                 counter = new NativeCounter(Allocator.Persistent),
             };
 

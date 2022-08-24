@@ -1,7 +1,5 @@
 using Butterfly.Utility;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace Butterfly.Component
 {
@@ -10,8 +8,8 @@ namespace Butterfly.Component
     {
         public const int MaxVertices = 510000;
         public RenderSettings settings;
-        public NativeArray<float3> vertices;
-        public NativeArray<float3> normals;
+        public UnityEngine.Vector3[] vertices;
+        public UnityEngine.Vector3[] normals;
         public UnityEngine.Mesh workMesh;
         public NativeCounter counter;
 
@@ -34,10 +32,10 @@ namespace Butterfly.Component
             unchecked
             {
                 var hashCode = settings.GetHashCode();
-                hashCode = (hashCode * 397) ^ vertices.GetHashCode();
-                hashCode = (hashCode * 397) ^ normals.GetHashCode();
-                hashCode = (hashCode * 397) ^ (workMesh != null ? workMesh.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ counter.GetHashCode();
+                hashCode = hashCode * 397 ^ vertices.GetHashCode();
+                hashCode = hashCode * 397 ^ normals.GetHashCode();
+                hashCode = hashCode * 397 ^ (workMesh != null ? workMesh.GetHashCode() : 0);
+                hashCode = hashCode * 397 ^ counter.GetHashCode();
                 return hashCode;
             }
         }

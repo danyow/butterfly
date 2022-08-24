@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Butterfly.Component;
 using Butterfly.Utility;
-using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -35,7 +35,7 @@ namespace Butterfly
             );
         }
 
-        protected override void OnUpdate()
+        protected override unsafe void OnUpdate()
         {
             EntityManager.GetAllUniqueSharedComponentData(_renderers);
 
@@ -52,13 +52,13 @@ namespace Butterfly
                 renderer.counter.count = 0;
 
                 // 把需要的变量先作为临时变量
-                var vertices = renderer.vertices;
-                var normals = renderer.normals;
+                var vertices = (Vector3*)UnsafeUtility.AddressOf(ref renderer.vertices[0]);
+                var normals = (Vector3*)UnsafeUtility.AddressOf(ref renderer.normals[0]);
                 NativeCounter.Concurrent counter = renderer.counter;
 
                 Entities
                    .ForEach(
-                        (int entityInQueryIndex, in Triangle triangle, in Translation translation, in Particle particle) =>
+                        (in Triangle triangle, in Translation translation, in Particle particle) =>
                         {
                             var p = particle;
 
@@ -101,8 +101,8 @@ namespace Butterfly
                             AddTriangle(v1, v4, v2, counter, vertices, normals);
                         }
                     )
-                   .WithNativeDisableParallelForRestriction(vertices)
-                   .WithNativeDisableParallelForRestriction(normals)
+                   .WithNativeDisableUnsafePtrRestriction(vertices)
+                   .WithNativeDisableUnsafePtrRestriction(normals)
                    .WithSharedComponentFilter(renderer)
                    .WithStoreEntityQueryInField(ref _query)
                    .ScheduleParallel();
@@ -111,22 +111,26 @@ namespace Butterfly
             _renderers.Clear();
         }
 
-        private static void AddTriangle(
+        private unsafe static void AddTriangle(
             float3 v1,
             float3 v2,
             float3 v3,
             NativeCounter.Concurrent counter,
-            NativeArray<float3> vertices,
-            NativeArray<float3> normals
+            void* vertices,
+            void* normals
         )
         {
             var i = counter.Increment() * 3;
 
-            vertices[i + 0] = v1;
-            vertices[i + 1] = v2;
-            vertices[i + 2] = v3;
+            UnsafeUtility.WriteArrayElement(vertices, i + 0, v1);
+            UnsafeUtility.WriteArrayElement(vertices, i + 1, v2);
+            UnsafeUtility.WriteArrayElement(vertices, i + 2, v3);
 
-            normals[i + 0] = normals[i + 1] = normals[i + 2] = math.normalize(math.cross(v2 - v1, v3 - v1));
+            var n = math.normalize(math.cross(v2 - v1, v3 - v1));
+
+            UnsafeUtility.WriteArrayElement(normals, i + 0, n);
+            UnsafeUtility.WriteArrayElement(normals, i + 1, n);
+            UnsafeUtility.WriteArrayElement(normals, i + 2, n);
         }
     }
 }

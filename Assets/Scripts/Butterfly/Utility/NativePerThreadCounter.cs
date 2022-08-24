@@ -4,6 +4,8 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs.LowLevel.Unsafe;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMember.Global
 namespace Butterfly.Utility
 {
     [StructLayout(LayoutKind.Sequential)]
@@ -50,7 +52,7 @@ namespace Butterfly.Utility
 #endif
 
             // 将Count初始化为0，避免数据未初始化
-            Count = 0;
+            count = 0;
         }
 
         public void Increment()
@@ -63,7 +65,7 @@ namespace Butterfly.Utility
             (*m_Counter)++;
         }
 
-        public int Count
+        public int count
         {
             get
             {
@@ -72,12 +74,12 @@ namespace Butterfly.Utility
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                 AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
 #endif
-                var count = 0;
+                var tempCount = 0;
                 for(var i = 0; i < JobsUtility.MaxJobThreadCount; i++)
                 {
-                    count += m_Counter[IntsPerCacheLine * i];
+                    tempCount += m_Counter[IntsPerCacheLine * i];
                 }
-                return count;
+                return tempCount;
             }
             set
             {
@@ -97,7 +99,7 @@ namespace Butterfly.Utility
             }
         }
 
-        public bool IsCreated => m_Counter != null;
+        public bool isCreated => m_Counter != null;
 
         public void Dispose()
         {

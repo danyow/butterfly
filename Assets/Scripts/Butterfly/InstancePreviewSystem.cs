@@ -5,12 +5,11 @@ using Unity.Entities;
 using Unity.Transforms;
 using RenderSettings = Butterfly.Component.RenderSettings;
 
+// ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    // ReSharper disable once PartialTypeWithSinglePart
     [UnityEngine.ExecuteAlways]
     [AlwaysUpdateSystem]
-    // [UpdateInGroup(typeof(PresentationSystemGroup))]
     public partial class InstancePreviewSystem: ComponentSystem
     {
         private EntityQuery _query;
@@ -33,9 +32,8 @@ namespace Butterfly
         protected override void OnUpdate()
         {
             var entities = _query.ToEntityArray(Unity.Collections.Allocator.Temp);
-            for(var i = 0; i < entities.Length; i++)
+            foreach(var entity in entities)
             {
-                var entity = entities[i];
                 var instance = EntityManager.GetSharedComponentData<Instance>(entity);
                 var ltw = EntityManager.GetComponentData<LocalToWorld>(entity);
                 var settings = EntityManager.GetSharedComponentData<RenderSettings>(entity);

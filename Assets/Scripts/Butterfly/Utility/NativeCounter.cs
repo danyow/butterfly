@@ -4,6 +4,7 @@ using System.Threading;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
+// ReSharper disable UnusedMember.Global
 namespace Butterfly.Utility
 {
     [StructLayout(LayoutKind.Sequential)] // 顺序的
@@ -104,7 +105,7 @@ namespace Butterfly.Utility
 
         // 这个属性使得在并行作业中使用 NativeCounter.Concurrent 成为可能
         [NativeContainerIsAtomicWriteOnly] // 原生容器是原子只写的
-        public unsafe struct Concurrent
+        public struct Concurrent
         {
             // 来自完整 NativeCounter 的指针副本
             [NativeDisableUnsafePtrRestriction] // 原生禁用不安全指针限制

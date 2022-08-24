@@ -4,10 +4,10 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
+// ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
     [UpdateBefore(typeof(ParticleReconstructionSystem))]
-    // ReSharper disable once RedundantExtendsListEntry
     public partial class NoiseEffectorSystem: SystemBase
     {
         private EntityQuery _query;

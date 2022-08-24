@@ -1,9 +1,9 @@
 using Unity.Entities;
 
+// ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
     [UpdateBefore(typeof(NoiseEffectorSystem))]
-    // ReSharper disable once RedundantExtendsListEntry
     public partial class NoiseEffectorAnimationSystem: SystemBase
     {
         protected override void OnUpdate()

@@ -13,32 +13,17 @@ namespace Butterfly
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private EntityQuery _dependency; // 仅用于启用依赖项跟踪
 
-        // 用于将数据注入网格的托管数组
-        private UnityEngine.Vector3[] _vertexArray;
-        private UnityEngine.Vector3[] _normalArray;
-        private int[] _indexArray;
+        private readonly int[] _indexArray = new int[Renderer.MaxVertices];
 
         protected override void OnCreate()
         {
             _dependency = GetEntityQuery(typeof(Particle), typeof(Renderer));
-
-            // 分配临时托管数组。
-            _vertexArray = new UnityEngine.Vector3[Renderer.MaxVertices];
-            _normalArray = new UnityEngine.Vector3[Renderer.MaxVertices];
-            _indexArray = new int[Renderer.MaxVertices];
 
             // 默认索引数组
             for(var i = 0; i < Renderer.MaxVertices; i++)
             {
                 _indexArray[i] = i;
             }
-        }
-
-        protected override void OnDestroy()
-        {
-            _indexArray = null;
-            _normalArray = null;
-            _vertexArray = null;
         }
 
         protected override unsafe void OnUpdate()
@@ -70,30 +55,17 @@ namespace Butterfly
                     mesh.MarkDynamic();
                 }
 
-                // 将顶点/法线数据复制到托管缓冲区中。
+                // 清除顶点缓冲区中未使用的部分。
                 var vertexCount = renderer.counter.count * 3;
 
-                UnsafeUtility.MemCpy(
-                    UnsafeUtility.AddressOf(ref _vertexArray[0]),
-                    renderer.vertices.GetUnsafePtr(),
-                    sizeof(float3) * vertexCount
-                );
-
-                UnsafeUtility.MemCpy(
-                    UnsafeUtility.AddressOf(ref _normalArray[0]),
-                    renderer.normals.GetUnsafePtr(),
-                    sizeof(float3) * vertexCount
-                );
-
-                // 清除剩余的托管顶点缓冲区。
                 UnsafeUtility.MemClear(
-                    UnsafeUtility.AddressOf(ref _vertexArray[vertexCount]),
+                    UnsafeUtility.AddressOf(ref renderer.vertices[vertexCount]),
                     sizeof(float3) * (Renderer.MaxVertices - vertexCount)
                 );
 
                 // 通过托管缓冲区更新顶点/法线数组。
-                mesh.vertices = _vertexArray;
-                mesh.normals = _normalArray;
+                mesh.vertices = renderer.vertices;
+                mesh.normals = renderer.normals;
 
                 if(!meshIsReady)
                 {

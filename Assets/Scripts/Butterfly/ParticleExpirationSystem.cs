@@ -1,9 +1,9 @@
 using Unity.Entities;
 using Butterfly.Component;
 
+// ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
-    // ReSharper disable once RedundantExtendsListEntry
     public partial class ParticleExpirationSystem: SystemBase
     {
         protected override void OnUpdate()

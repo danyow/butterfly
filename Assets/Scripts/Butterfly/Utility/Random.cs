@@ -1,3 +1,5 @@
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Butterfly.Utility
 {
     public static class Random
@@ -13,7 +15,7 @@ namespace Butterfly.Utility
             s *= 2654435769u;
             return s;
         }
-        
+
         public static float Value01(uint seed)
         {
             return Hash(seed) / 4294967295.0f; // 2^32-1
