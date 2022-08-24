@@ -186,52 +186,6 @@ namespace Butterfly
             int[] indices
         )
         {
-            // // 为这个查询创建一个渲染器。
-            // var renderer = new Renderer
-            // {
-            //     settings = renderSettings,
-            //     workMesh = new Mesh(),
-            //     vertices = new Vector3[Renderer.MaxVertices],
-            //     normals = new Vector3[Renderer.MaxVertices],
-            //     counter = new NativeCounter(Allocator.Persistent),
-            // };
-            //
-            // _toBeDisposed.Add(renderer);
-            //
-            // // 创建模板实体。
-            // var template = EntityManager.CreateEntity(_archetype);
-            // EntityManager.SetSharedComponentData(template, renderer);
-            //
-            // // 克隆模板实体。
-            // var clones = new NativeArray<Entity>(indices.Length / 3, Allocator.Temp);
-            // EntityManager.Instantiate(template, clones);
-            //
-            // // 设置初始数据。
-            // for(var i = 0; i < clones.Length; i++)
-            // {
-            //     var v1 = math.mul(matrix, new float4(vertices[indices[i * 3 + 0]], 1)).xyz;
-            //     var v2 = math.mul(matrix, new float4(vertices[indices[i * 3 + 1]], 1)).xyz;
-            //     var v3 = math.mul(matrix, new float4(vertices[indices[i * 3 + 2]], 1)).xyz;
-            //     var vc = (v1 + v2 + v3) / 3;
-            //
-            //     var entity = clones[i];
-            //
-            //     EntityManager.SetComponentData(
-            //         entity,
-            //         new Triangle { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, }
-            //     );
-            //
-            //     EntityManager.SetComponentData(entity, new Translation { Value = vc, });
-            //
-            //     EntityManager.SetComponentData(entity, new Particle { random = Random.Value01((uint)i), });
-            // }
-            //
-            // // 销毁模板对象。
-            // EntityManager.DestroyEntity(template);
-            // clones.Dispose();
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
             var entityCount = indices.Length / 3;
 
             // 使用并行作业计算初始数据。
@@ -247,6 +201,9 @@ namespace Butterfly
 
             var jobHandle = job.Schedule(entityCount, 32);
 
+            // 我们希望与作业并行进行实体实例化，所以让工作立即开始。
+            JobHandle.ScheduleBatchedJobs();
+            
             // 为这个查询创建一个渲染器。
             var renderer = new Renderer
             {
