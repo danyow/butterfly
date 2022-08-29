@@ -7,7 +7,8 @@ using Unity.Transforms;
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
-    [UpdateBefore(typeof(ParticleReconstructionSystem))]
+    [UpdateBefore(typeof(SimpleParticleSystem))]
+    [UpdateBefore(typeof(ButterflyParticleSystem))]
     public partial class NoiseEffectorSystem: SystemBase
     {
         private EntityQuery _query;

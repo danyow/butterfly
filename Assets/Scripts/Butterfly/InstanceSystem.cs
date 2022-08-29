@@ -55,6 +55,7 @@ namespace Butterfly
             foreach(var renderer in _toBeDisposed)
             {
                 // ReSharper disable PossiblyImpureMethodCallOnReadonlyVariable
+                Object.Destroy(renderer.workMesh);
                 renderer.counter.Dispose();
             }
             _toBeDisposed.Clear();
@@ -80,19 +81,21 @@ namespace Butterfly
             foreach(var instanceData in _instanceDataList)
             {
                 // 如果没有数据则跳过。
-                if(!instanceData.templateMesh)
+                if(instanceData.templateMesh == null)
                 {
                     continue;
                 }
 
                 // 获取实体数组的副本。不要直接使用迭代器——我们要移除缓冲区组件，它会使迭代器失效。
                 _instanceQuery.SetSharedComponentFilter(instanceData);
+
                 var iterator = _instanceQuery.ToEntityArray(Allocator.Temp);
                 if(iterator.Length == 0)
                 {
                     continue;
                 }
-                var instanceEntities = new NativeArray<Entity>(iterator.Length, Allocator.Temp);
+
+                var instanceEntities = new NativeArray<Entity>(iterator.Length, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
                 iterator.CopyTo(instanceEntities);
 
                 // 检索网格数据。
@@ -168,6 +171,7 @@ namespace Butterfly
                 v3 = math.mul(ltw, new float4(v3, 1)).xyz;
 
                 var vc = (v1 + v2 + v3) / 3;
+
                 triangles[index] = new Triangle { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, };
 
                 translations[index] = new Translation { Value = vc, };
@@ -203,27 +207,42 @@ namespace Butterfly
 
             // 我们希望与作业并行进行实体实例化，所以让工作立即开始。
             JobHandle.ScheduleBatchedJobs();
-            
+
             // 为这个查询创建一个渲染器。
+            var counter = new NativeCounter(Allocator.Persistent);
             var renderer = new Renderer
             {
                 settings = renderSettings,
                 workMesh = new Mesh(),
                 vertices = new Vector3[Renderer.MaxVertices],
                 normals = new Vector3[Renderer.MaxVertices],
-                counter = new NativeCounter(Allocator.Persistent),
+                counter = counter,
+                concurrentCounter = counter,
             };
 
+            // 我们希望这个渲染器对象在世界的尽头被销毁。
             _toBeDisposed.Add(renderer);
 
-            // 创建模板实体。
-            var defaultEntity = EntityManager.CreateEntity(_archetype);
-            EntityManager.SetSharedComponentData(defaultEntity, renderer);
+            // 创建默认实体。
+            var defaultEntity1 = EntityManager.CreateEntity(_archetype);
+            var defaultEntity2 = EntityManager.CreateEntity(_archetype);
 
-            // 克隆模板实体。
+            EntityManager.SetSharedComponentData(defaultEntity1, renderer);
+            EntityManager.SetSharedComponentData(defaultEntity2, renderer);
+
+            EntityManager.AddSharedComponentData(defaultEntity1, default(SimpleParticle));
+            EntityManager.AddSharedComponentData(defaultEntity2, default(ButterflyParticle));
+
+            // 创建一个克隆数组作为在每个三角形上放置一个克隆。
             var entities = new NativeArray<Entity>(entityCount, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
-            EntityManager.Instantiate(defaultEntity, entities);
 
+            for(var i = 0; i < entityCount; i++)
+            {
+                var sel = Random.Value01((uint)i) < 0.5f;
+                entities[i] = EntityManager.Instantiate(sel ? defaultEntity1 : defaultEntity2);
+            }
+
+            // 设置初始数据。
             jobHandle.Complete();
 
             for(var i = 0; i < entityCount; i++)
@@ -235,8 +254,12 @@ namespace Butterfly
                 EntityManager.SetComponentData(entity, job.translations[i]);
             }
 
-            EntityManager.DestroyEntity(defaultEntity);
+            // 销毁临时对象。
             entities.Dispose();
+
+            EntityManager.DestroyEntity(defaultEntity1);
+            EntityManager.DestroyEntity(defaultEntity2);
+
             job.triangles.Dispose();
             job.particles.Dispose();
             job.translations.Dispose();

@@ -7,7 +7,8 @@ using Unity.Mathematics;
 // ReSharper disable NotAccessedField.Local
 namespace Butterfly
 {
-    [UpdateAfter(typeof(ParticleReconstructionSystem))]
+    [UpdateAfter(typeof(ButterflyParticleSystem))]
+    [UpdateAfter(typeof(SimpleParticleSystem))]
     public class FlyRendererSystem: ComponentSystem
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
@@ -33,8 +34,9 @@ namespace Butterfly
             // 迭代渲染器组件。
             EntityManager.GetAllUniqueSharedComponentData(_renderers);
 
-            foreach(var renderer in _renderers)
+            for(var i = 0; i < _renderers.Count; i++)
             {
+                var renderer = _renderers[i];
                 var mesh = renderer.workMesh;
 
                 // 如果没有网格（== 默认空数据），则不执行任何操作
@@ -78,6 +80,9 @@ namespace Butterfly
 
                 // 绘制调用
                 UnityEngine.Graphics.DrawMesh(mesh, identityMatrix, renderer.settings.material, 0);
+
+                // 重置下一帧的三角形计数器。
+                renderer.counter.count = 0;
             }
 
             _renderers.Clear();

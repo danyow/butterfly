@@ -12,14 +12,16 @@ namespace Butterfly.Component
         public UnityEngine.Vector3[] normals;
         public UnityEngine.Mesh workMesh;
         public NativeCounter counter;
+        public NativeCounter.Concurrent concurrentCounter;
 
         public bool Equals(Renderer other)
         {
             return settings.Equals(other.settings) &&
-                   vertices.Equals(other.vertices) &&
-                   normals.Equals(other.normals) &&
+                   Equals(vertices, other.vertices) &&
+                   Equals(normals, other.normals) &&
                    Equals(workMesh, other.workMesh) &&
-                   counter.Equals(other.counter);
+                   counter.Equals(other.counter) &&
+                   concurrentCounter.Equals(other.concurrentCounter);
         }
 
         public override bool Equals(object obj)
@@ -29,15 +31,7 @@ namespace Butterfly.Component
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = settings.GetHashCode();
-                hashCode = hashCode * 397 ^ vertices.GetHashCode();
-                hashCode = hashCode * 397 ^ normals.GetHashCode();
-                hashCode = hashCode * 397 ^ (workMesh != null ? workMesh.GetHashCode() : 0);
-                hashCode = hashCode * 397 ^ counter.GetHashCode();
-                return hashCode;
-            }
+            return System.HashCode.Combine(settings, vertices, normals, workMesh, counter, concurrentCounter);
         }
     }
 }
