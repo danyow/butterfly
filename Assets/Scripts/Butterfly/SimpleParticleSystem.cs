@@ -110,8 +110,6 @@ namespace Butterfly
                 var normals = (Vector3*)UnsafeUtility.AddressOf(ref renderer.normals[0]);
                 var counter = renderer.concurrentCounter;
 
-                //////////////////////////////////////////////////////////////////////////////////////
-
                 var job = new ReconstructionJob
                 {
                     particles = _query.ToComponentDataArray<Particle>(Allocator.TempJob),
@@ -126,28 +124,6 @@ namespace Butterfly
                 Dependency = job.particles.Dispose(Dependency);
                 Dependency = job.triangles.Dispose(Dependency);
                 Dependency = job.translations.Dispose(Dependency);
-
-                //////////////////////////////////////////////////////////////////////////////////////
-
-                // Entities
-                //    .ForEach(
-                //         (in Triangle triangle, in Translation translation, in Particle particle) =>
-                //         {
-                //             var pos = translation.Value;
-                //             var face = triangle;
-                //
-                //             var v1 = pos + face.vertex1;
-                //             var v2 = pos + face.vertex2;
-                //             var v3 = pos + face.vertex3;
-                //
-                //             AddTriangle(v1, v2, v3, counter, vertices, normals);
-                //         }
-                //     )
-                //    .WithNativeDisableUnsafePtrRestriction(vertices)
-                //    .WithNativeDisableUnsafePtrRestriction(normals)
-                //    .WithSharedComponentFilter(renderer)
-                //    .WithStoreEntityQueryInField(ref _query)
-                //    .ScheduleParallel(Dependency);
             }
 
             _renderers.Clear();

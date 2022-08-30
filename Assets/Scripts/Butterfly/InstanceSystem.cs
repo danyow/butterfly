@@ -112,8 +112,8 @@ namespace Butterfly
 
                     // 循环 3：迭代模板网格中的顶点。
                     CreateEntitiesOverMesh(
+                        instanceEntity,
                         matrix,
-                        EntityManager.GetSharedComponentData<RenderSettings>(instanceEntity),
                         vertices,
                         indices
                     );
@@ -129,6 +129,88 @@ namespace Butterfly
             var time = 1000f * stopwatch.ElapsedTicks / Stopwatch.Frequency;
             UnityEngine.Debug.Log($"Instantiation time: {time}ms");
 #endif
+        }
+
+#endregion
+
+#region 默认实体表
+
+        //该表用于创建具有加权的粒子实体粒子类型的随机分布。它存储选择权重和允许创建具有实例化的实体的默认实体。
+
+        /// <summary>
+        /// 默认实体条目
+        /// </summary>
+        private struct DefaultEntityEntry
+        {
+            public float weight;
+            public Entity entity;
+        }
+
+        private readonly DefaultEntityEntry[] _defaultEntityEntries = new DefaultEntityEntry[16];
+
+        private DefaultEntityEntry CreateDefaultEntity<T>(Entity sourceEntity, ref Renderer renderer)
+            where T: struct, ISharedComponentData, IParticleVariant
+        {
+            // 变体
+            var variant = EntityManager.GetSharedComponentData<T>(sourceEntity);
+            var entity = EntityManager.CreateEntity(_archetype);
+            EntityManager.SetSharedComponentData(entity, renderer);
+            EntityManager.AddSharedComponentData(entity, variant);
+            return new DefaultEntityEntry { weight = variant.GetWeight(), entity = entity, };
+        }
+
+        /// <summary>
+        /// 规范化默认实体权重
+        /// </summary>
+        private void NormalizeDefaultEntityWeights()
+        {
+            var total = 0f;
+
+            for(var i = 0; i < _defaultEntityEntries.Length; i++)
+            {
+                total += _defaultEntityEntries[i].weight;
+            }
+
+            var subtotal = 0.0f;
+            for(var i = 0; i < _defaultEntityEntries.Length; i++)
+            {
+                subtotal += _defaultEntityEntries[i].weight / total;
+                _defaultEntityEntries[i].weight = subtotal;
+            }
+        }
+
+        /// <summary>
+        /// 选择随机默认实体
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns></returns>
+        private Entity SelectRandomDefaultEntity(uint seed)
+        {
+            var rand = Random.Value01(seed);
+            for(var i = 0; i < _defaultEntityEntries.Length; i++)
+            {
+                if(rand < _defaultEntityEntries[i].weight)
+                {
+                    return _defaultEntityEntries[i].entity;
+                }
+            }
+            return Entity.Null;
+        }
+
+        /// <summary>
+        /// 清理默认实体表
+        /// </summary>
+        private void CleanupDefaultEntityTable()
+        {
+            for(var i = 0; i < _defaultEntityEntries.Length; i++)
+            {
+                var entity = _defaultEntityEntries[i].entity;
+                if(EntityManager.Exists(entity))
+                {
+                    EntityManager.DestroyEntity(entity);
+                }
+                _defaultEntityEntries[i] = default(DefaultEntityEntry);
+            }
         }
 
 #endregion
@@ -184,8 +266,8 @@ namespace Butterfly
         /// 实例化
         /// </summary>
         private unsafe void CreateEntitiesOverMesh(
+            Entity sourceEntity,
             float4x4 matrix,
-            RenderSettings renderSettings,
             Vector3[] vertices,
             int[] indices
         )
@@ -212,7 +294,7 @@ namespace Butterfly
             var counter = new NativeCounter(Allocator.Persistent);
             var renderer = new Renderer
             {
-                settings = renderSettings,
+                settings = EntityManager.GetSharedComponentData<RenderSettings>(sourceEntity),
                 workMesh = new Mesh(),
                 vertices = new Vector3[Renderer.MaxVertices],
                 normals = new Vector3[Renderer.MaxVertices],
@@ -223,23 +305,17 @@ namespace Butterfly
             // 我们希望这个渲染器对象在世界的尽头被销毁。
             _toBeDisposed.Add(renderer);
 
-            // 创建默认实体。
-            var defaultEntity1 = EntityManager.CreateEntity(_archetype);
-            var defaultEntity2 = EntityManager.CreateEntity(_archetype);
-
-            EntityManager.SetSharedComponentData(defaultEntity1, renderer);
-            EntityManager.SetSharedComponentData(defaultEntity2, renderer);
-
-            EntityManager.AddSharedComponentData(defaultEntity1, default(SimpleParticle));
-            EntityManager.AddSharedComponentData(defaultEntity2, default(ButterflyParticle));
+            // 初始化默认实体表。
+            _defaultEntityEntries[0] = CreateDefaultEntity<SimpleParticle>(sourceEntity, ref renderer);
+            _defaultEntityEntries[1] = CreateDefaultEntity<ButterflyParticle>(sourceEntity, ref renderer);
+            NormalizeDefaultEntityWeights();
 
             // 创建一个克隆数组作为在每个三角形上放置一个克隆。
             var entities = new NativeArray<Entity>(entityCount, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
 
             for(var i = 0; i < entityCount; i++)
             {
-                var sel = Random.Value01((uint)i) < 0.5f;
-                entities[i] = EntityManager.Instantiate(sel ? defaultEntity1 : defaultEntity2);
+                entities[i] = EntityManager.Instantiate(SelectRandomDefaultEntity((uint)i));
             }
 
             // 设置初始数据。
@@ -257,8 +333,7 @@ namespace Butterfly
             // 销毁临时对象。
             entities.Dispose();
 
-            EntityManager.DestroyEntity(defaultEntity1);
-            EntityManager.DestroyEntity(defaultEntity2);
+            CleanupDefaultEntityTable();
 
             job.triangles.Dispose();
             job.particles.Dispose();
