@@ -54,14 +54,27 @@ namespace Butterfly
 
             public void Execute(int index)
             {
-                var pos = translations[index].Value;
+                var particle = particles[index];
                 var face = triangles[index];
 
-                var v1 = pos + face.vertex1;
-                var v2 = pos + face.vertex2;
-                var v3 = pos + face.vertex3;
+                var fwd = particle.velocity + 1e-4f;
+                var axis = math.normalize(math.cross(fwd, face.vertex1));
+                var rot = AxisAngle(axis, particle.life * 3);
+
+                var pos = translations[index].Value;
+                var v1 = pos + math.mul(rot, face.vertex1);
+                var v2 = pos + math.mul(rot, face.vertex2);
+                var v3 = pos + math.mul(rot, face.vertex3);
 
                 AddTriangle(v1, v2, v3);
+            }
+
+            private quaternion AxisAngle(float3 axis, float angle)
+            {
+                var axisUnit = math.normalize(axis);
+                var sina = math.sin(0.5f * angle);
+                var cosa = math.cos(0.5f * angle);
+                return new quaternion { value = new float4(axisUnit.x * sina, axisUnit.y * sina, axisUnit.z * sina, cosa) };
             }
         }
 
@@ -119,7 +132,7 @@ namespace Butterfly
                     normals = normals,
                     counter = counter,
                 };
-                Dependency = job.Schedule(_query.CalculateEntityCount(), 16, Dependency);
+                Dependency = job.Schedule(_query.CalculateEntityCount(), 8, Dependency);
 
                 Dependency = job.particles.Dispose(Dependency);
                 Dependency = job.triangles.Dispose(Dependency);
