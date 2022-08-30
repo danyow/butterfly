@@ -3,7 +3,7 @@ using Unity.Entities;
 namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct RenderSettings: ISharedComponentData, System.IEquatable<RenderSettings>
+    internal struct RenderSettings: ISharedComponentData, System.IEquatable<RenderSettings>
     {
         public UnityEngine.Material material;
         public UnityEngine.Rendering.ShadowCastingMode castShadows;

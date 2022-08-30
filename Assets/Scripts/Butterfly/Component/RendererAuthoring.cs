@@ -1,6 +1,6 @@
 namespace Butterfly.Component
 {
-    public class RendererAuthoring: UnityEngine.MonoBehaviour
+    internal sealed class RendererAuthoring: UnityEngine.MonoBehaviour
     {
         public UnityEngine.Mesh workMesh;
     }

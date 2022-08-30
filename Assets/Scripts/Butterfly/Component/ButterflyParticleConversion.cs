@@ -1,6 +1,6 @@
 namespace Butterfly.Component
 {
-    public class ButterflyParticleConversion: GameObjectConversionSystem
+    internal sealed class ButterflyParticleConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {

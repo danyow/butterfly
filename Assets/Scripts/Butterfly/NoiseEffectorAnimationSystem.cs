@@ -1,10 +1,11 @@
 using Unity.Entities;
 
+// ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
     [UpdateBefore(typeof(NoiseEffectorSystem))]
-    public partial class NoiseEffectorAnimationSystem: SystemBase
+    internal sealed partial class NoiseEffectorAnimationSystem: SystemBase
     {
         protected override void OnUpdate()
         {

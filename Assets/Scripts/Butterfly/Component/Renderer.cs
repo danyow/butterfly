@@ -4,7 +4,7 @@ using Unity.Entities;
 namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct Renderer: ISharedComponentData, System.IEquatable<Renderer>
+    internal struct Renderer: ISharedComponentData, System.IEquatable<Renderer>
     {
         public const int MaxVertices = 510000;
         public RenderSettings settings;

@@ -3,7 +3,7 @@ using Unity.Entities;
 namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct Instance: ISharedComponentData, System.IEquatable<Instance>
+    internal struct Instance: ISharedComponentData, System.IEquatable<Instance>
     {
         public UnityEngine.Mesh templateMesh;
 

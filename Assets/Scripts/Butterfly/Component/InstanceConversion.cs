@@ -1,6 +1,6 @@
 namespace Butterfly.Component
 {
-    public class InstanceConversion: GameObjectConversionSystem
+    internal sealed class InstanceConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {

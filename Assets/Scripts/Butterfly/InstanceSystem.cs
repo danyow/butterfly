@@ -20,7 +20,7 @@ using RenderSettings = Butterfly.Component.RenderSettings;
 
 namespace Butterfly
 {
-    public class InstanceSystem: ComponentSystem
+    internal sealed class InstanceSystem: ComponentSystem
     {
 #region 组件系统实现
 

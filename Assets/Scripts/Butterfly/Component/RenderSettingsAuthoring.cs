@@ -1,7 +1,7 @@
 namespace Butterfly.Component
 {
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Render Settings")]
-    public class RenderSettingsAuthoring: UnityEngine.MonoBehaviour
+    internal sealed class RenderSettingsAuthoring: UnityEngine.MonoBehaviour
     {
         public UnityEngine.Material material;
         public UnityEngine.Rendering.ShadowCastingMode castShadows;

@@ -17,7 +17,7 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    public partial class SimpleParticleSystem: SystemBase
+    internal sealed partial class SimpleParticleSystem: SystemBase
     {
         [BurstCompatible]
         private unsafe struct ReconstructionJob: IJobParallelFor

@@ -16,7 +16,7 @@ using Vector3 = UnityEngine.Vector3;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly
 {
-    public partial class ButterflyParticleSystem: SystemBase
+    internal sealed partial class ButterflyParticleSystem: SystemBase
     {
         private const float kSize = 0.005f;
 

@@ -1,7 +1,7 @@
 namespace Butterfly.Component
 {
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Noise Effector")]
-    public class NoiseEffectorAuthoring: UnityEngine.MonoBehaviour
+    internal sealed class NoiseEffectorAuthoring: UnityEngine.MonoBehaviour
     {
         /// <summary>
         /// 频率

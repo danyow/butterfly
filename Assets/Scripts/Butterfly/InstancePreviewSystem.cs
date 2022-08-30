@@ -10,7 +10,7 @@ namespace Butterfly
 {
     [UnityEngine.ExecuteAlways]
     [AlwaysUpdateSystem]
-    public partial class InstancePreviewSystem: ComponentSystem
+    internal sealed partial class InstancePreviewSystem: ComponentSystem
     {
         private EntityQuery _query;
 

@@ -1,22 +1,19 @@
 namespace Butterfly.Component
 {
-    namespace Butterfly.Component
+    internal sealed class SimpleParticleConversion: GameObjectConversionSystem
     {
-        public class SimpleParticleConversion: GameObjectConversionSystem
+        protected override void OnUpdate()
         {
-            protected override void OnUpdate()
-            {
-                Entities.ForEach(
-                    (SimpleParticleAuthoring authoring) =>
-                    {
-                        var entity = GetPrimaryEntity(authoring);
-                        DstEntityManager.AddSharedComponentData(
-                            entity,
-                            new SimpleParticle { weight = authoring.weight, }
-                        );
-                    }
-                );
-            }
+            Entities.ForEach(
+                (SimpleParticleAuthoring authoring) =>
+                {
+                    var entity = GetPrimaryEntity(authoring);
+                    DstEntityManager.AddSharedComponentData(
+                        entity,
+                        new SimpleParticle { weight = authoring.weight, }
+                    );
+                }
+            );
         }
     }
 }

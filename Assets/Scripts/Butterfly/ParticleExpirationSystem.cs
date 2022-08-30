@@ -1,10 +1,11 @@
 using Unity.Entities;
 using Butterfly.Component;
 
+// ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
-    public partial class ParticleExpirationSystem: SystemBase
+    internal sealed partial class ParticleExpirationSystem: SystemBase
     {
         protected override void OnUpdate()
         {

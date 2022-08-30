@@ -3,7 +3,7 @@ using Unity.Entities;
 namespace Butterfly.Component
 {
     [System.Serializable]
-    public struct NoiseEffector: IComponentData
+    internal struct NoiseEffector: IComponentData
     {
         /// <summary>
         /// 频率

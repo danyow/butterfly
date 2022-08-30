@@ -4,12 +4,13 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 
+// ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
     [UpdateBefore(typeof(SimpleParticleSystem))]
     [UpdateBefore(typeof(ButterflyParticleSystem))]
-    public partial class NoiseEffectorSystem: SystemBase
+    internal sealed partial class NoiseEffectorSystem: SystemBase
     {
         private EntityQuery _query;
 

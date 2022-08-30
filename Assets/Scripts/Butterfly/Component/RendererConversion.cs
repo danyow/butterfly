@@ -3,7 +3,7 @@ using Unity.Entities;
 namespace Butterfly.Component
 {
     [UpdateAfter(typeof(RenderSettingsConversion))]
-    public class RendererConversion: GameObjectConversionSystem
+    internal sealed class RendererConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {

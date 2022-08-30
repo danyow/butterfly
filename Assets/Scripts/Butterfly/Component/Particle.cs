@@ -4,7 +4,7 @@ using Unity.Mathematics;
 namespace Butterfly.Component
 {
     // 粉碎机
-    public struct Particle: IComponentData
+    internal struct Particle: IComponentData
     {
         /// <summary>
         /// 速度

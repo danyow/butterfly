@@ -1,6 +1,6 @@
 namespace Butterfly.Component
 {
-    public class NoiseEffectorConversion: GameObjectConversionSystem
+    internal sealed class NoiseEffectorConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {

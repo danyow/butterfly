@@ -9,7 +9,7 @@ namespace Butterfly
 {
     [UpdateAfter(typeof(ButterflyParticleSystem))]
     [UpdateAfter(typeof(SimpleParticleSystem))]
-    public class FlyRendererSystem: ComponentSystem
+    internal sealed class FlyRendererSystem: ComponentSystem
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private EntityQuery _dependency; // 仅用于启用依赖项跟踪
