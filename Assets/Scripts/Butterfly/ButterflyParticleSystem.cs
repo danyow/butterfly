@@ -62,7 +62,7 @@ namespace Butterfly
                 var ay = math.cross(az, ax);
 
                 var freq = 8 + p.random * 20;
-                var flap = math.sin(freq * p.life);
+                var flap = math.sin(freq * p.time);
 
                 ax = math.normalize(ax) * kSize;
                 ay = math.normalize(ay) * kSize * flap;
@@ -82,7 +82,7 @@ namespace Butterfly
                 var vb5 = vb3 + ax * 2;
                 var vb6 = vb4 + ax * 2;
 
-                var pt = math.saturate(p.life);
+                var pt = math.saturate(p.time);
                 var v1 = math.lerp(va1, vb1, pt);
                 var v2 = math.lerp(va2, vb2, pt);
                 var v3 = math.lerp(va3, vb3, pt);
@@ -124,13 +124,15 @@ namespace Butterfly
             {
                 var renderer = _renderers[i];
 
-                if(renderer.workMesh == null)
-                {
-                    continue;
-                }
+                // if(renderer.workMesh == null)
+                // {
+                //     continue;
+                // }
 
                 _query.SetSharedComponentFilter(renderer);
-                if(_query.CalculateEntityCount() == 0)
+
+                var count = _query.CalculateEntityCount();
+                if(count == 0)
                 {
                     continue;
                 }
@@ -149,8 +151,8 @@ namespace Butterfly
                     normals = normals,
                     counter = counter,
                 };
-                Dependency = job.Schedule(_query.CalculateEntityCount(), 16, Dependency);
-                
+                Dependency = job.Schedule(count, 8, Dependency);
+
                 Dependency = job.particles.Dispose(Dependency);
                 Dependency = job.triangles.Dispose(Dependency);
                 Dependency = job.translations.Dispose(Dependency);

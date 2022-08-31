@@ -5,5 +5,8 @@ namespace Butterfly.Component
     {
         public float weight;
         public float GetWeight() => weight;
+
+        public float life;
+        public float GetLife() => life;
     }
 }

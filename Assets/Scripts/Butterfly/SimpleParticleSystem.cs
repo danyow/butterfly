@@ -59,7 +59,7 @@ namespace Butterfly
 
                 var fwd = particle.velocity + 1e-4f;
                 var axis = math.normalize(math.cross(fwd, face.vertex1));
-                var rot = AxisAngle(axis, particle.life * 3);
+                var rot = AxisAngle(axis, particle.time * 3);
 
                 var pos = translations[index].Value;
                 var v1 = pos + math.mul(rot, face.vertex1);
@@ -107,13 +107,14 @@ namespace Butterfly
             {
                 var renderer = _renderers[i];
 
-                if(renderer.workMesh == null)
-                {
-                    continue;
-                }
+                // if(renderer.workMesh == null)
+                // {
+                //     continue;
+                // }
 
                 _query.SetSharedComponentFilter(renderer);
-                if(_query.CalculateEntityCount() == 0)
+                var count = _query.CalculateEntityCount();
+                if(count == 0)
                 {
                     continue;
                 }
@@ -132,7 +133,7 @@ namespace Butterfly
                     normals = normals,
                     counter = counter,
                 };
-                Dependency = job.Schedule(_query.CalculateEntityCount(), 8, Dependency);
+                Dependency = job.Schedule(count, 8, Dependency);
 
                 Dependency = job.particles.Dispose(Dependency);
                 Dependency = job.triangles.Dispose(Dependency);

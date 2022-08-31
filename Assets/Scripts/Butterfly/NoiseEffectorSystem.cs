@@ -43,7 +43,7 @@ namespace Butterfly
                             var dt = deltaTime * Amplitude(pos, wtl.Value);
 
                             particle.velocity += acc * dt;
-                            particle.life += dt;
+                            particle.time += dt;
                             translation.Value += particle.velocity * dt;
                         }
                     )

@@ -13,7 +13,7 @@ namespace Butterfly
                .ForEach(
                     (Entity entity, in Particle particle) =>
                     {
-                        if(particle.life > 3 + particle.random * 5)
+                        if(particle.time > 3 + particle.random * 5)
                         {
                             EntityManager.DestroyEntity(entity);
                         }

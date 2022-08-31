@@ -10,7 +10,7 @@ namespace Butterfly.Component
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new ButterflyParticle { weight = authoring.weight, }
+                        new ButterflyParticle { weight = authoring.weight, life = authoring.life, }
                     );
                 }
             );
