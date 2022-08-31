@@ -2,7 +2,7 @@ using Butterfly.Component;
 
 namespace Butterfly
 {
-    public class SimpleParticleExpirationSystem: ParticleExpirationSystem<SimpleParticle>
+    public class SimpleParticleExpirationSystem: ParticleExpirationSystemBase<SimpleParticle>
     {
     }
 }

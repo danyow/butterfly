@@ -9,7 +9,7 @@ using Butterfly.Component;
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly
 {
-    public partial class ParticleExpirationSystem<T>: SystemBase where T: struct, ISharedComponentData, IParticleVariant
+    public partial class ParticleExpirationSystemBase<T>: SystemBase where T: struct, ISharedComponentData, IParticleVariant
     {
         [BurstCompile]
         private struct ParticleExpirationJob: IJob
@@ -40,17 +40,17 @@ namespace Butterfly
 
         private EntityQuery _query;
 
-        private BeginSimulationEntityCommandBufferSystem simEcbSystem;
+        private BeginSimulationEntityCommandBufferSystem _simEcbSystem;
 
         protected override void OnCreate()
         {
             _query = GetEntityQuery(typeof(Particle), typeof(T));
-            simEcbSystem = World.GetExistingSystem<BeginSimulationEntityCommandBufferSystem>();
+            _simEcbSystem = World.GetExistingSystem<BeginSimulationEntityCommandBufferSystem>();
         }
 
         protected override void OnUpdate()
         {
-            var ecb = simEcbSystem.CreateCommandBuffer();
+            var ecb = _simEcbSystem.CreateCommandBuffer();
 
             EntityManager.GetAllUniqueSharedComponentData(_variants);
 
@@ -71,7 +71,7 @@ namespace Butterfly
                 Dependency = job.entities.Dispose(Dependency);
                 
                 // 为生产者添加作业句柄
-                simEcbSystem.AddJobHandleForProducer(Dependency);
+                _simEcbSystem.AddJobHandleForProducer(Dependency);
             }
             _variants.Clear();
         }
