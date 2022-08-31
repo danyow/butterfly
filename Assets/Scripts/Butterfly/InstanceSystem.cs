@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Butterfly.Component;
 using Butterfly.Utility;
 using Unity.Jobs;
+using Unity.Burst;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Collections;
 using Unity.Entities;
@@ -220,7 +221,7 @@ namespace Butterfly
         // 我们使用并行作业来计算初始数据实例化实体中的组件。
         // 这样做的主要动机是用 Burst 优化向量数学运算
         // 我们不期望并行性会大大提高性能。
-        [BurstCompatible]
+        [BurstCompile]
         private unsafe struct InitDataJob: IJobParallelFor
         {
             [ReadOnly]

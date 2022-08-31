@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Jobs;
+using Unity.Burst;
 using Vector3 = UnityEngine.Vector3;
 
 // ReSharper disable UnusedMember.Local
@@ -20,7 +21,7 @@ namespace Butterfly
     {
         private const float kSize = 0.005f;
 
-        [BurstCompatible]
+        [BurstCompile]
         private unsafe struct ReconstructionJob: IJobParallelFor
         {
             [ReadOnly]
@@ -123,11 +124,6 @@ namespace Butterfly
             for(var i = 0; i < _renderers.Count; i++)
             {
                 var renderer = _renderers[i];
-
-                // if(renderer.workMesh == null)
-                // {
-                //     continue;
-                // }
 
                 _query.SetSharedComponentFilter(renderer);
 

@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Jobs;
+using Unity.Burst;
 using Vector3 = UnityEngine.Vector3;
 
 // ReSharper disable NotAccessedField.Local
@@ -19,7 +20,7 @@ namespace Butterfly
 {
     internal sealed partial class SimpleParticleSystem: SystemBase
     {
-        [BurstCompatible]
+        [BurstCompile]
         private unsafe struct ReconstructionJob: IJobParallelFor
         {
             [ReadOnly]
