@@ -51,6 +51,10 @@ namespace Butterfly
                 );
 
                 Dependency = job.Schedule(count, 8, Dependency);
+
+                Dependency = job.GetParticles().Dispose(Dependency);
+                Dependency = job.GetTriangles().Dispose(Dependency);
+                Dependency = job.GetTranslations().Dispose(Dependency);
             }
 
             _renderers.Clear();

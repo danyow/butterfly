@@ -6,7 +6,7 @@ namespace Butterfly.Component
     /// <summary>
     /// 三角形
     /// </summary>
-    internal struct Triangle: IComponentData
+    public struct Triangle: IComponentData
     {
         public float3 vertex1;
         public float3 vertex2;
