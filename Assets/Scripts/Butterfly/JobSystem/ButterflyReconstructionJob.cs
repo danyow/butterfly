@@ -18,61 +18,67 @@ using Random = Butterfly.Utility.Random;
 namespace Butterfly.JobSystem
 {
     [BurstCompile]
-    public unsafe struct ButterflyReconstructionJob: IJobParallelFor, IParticleReconstructionJob
+    public unsafe struct ButterflyReconstructionJob: IJobParallelFor, IParticleReconstructionJob<ButterflyParticle>
     {
         private const float kSize = 0.005f;
 
         [ReadOnly]
-        public NativeArray<Particle> particles;
+        private NativeArray<Particle> _particles;
 
         [ReadOnly]
-        public NativeArray<Triangle> triangles;
+        private NativeArray<Triangle> _triangles;
 
         [ReadOnly]
-        public NativeArray<Translation> translations;
+        private NativeArray<Translation> _translations;
 
         [NativeDisableUnsafePtrRestriction]
-        public void* vertices;
+        private void* _vertices;
 
         [NativeDisableUnsafePtrRestriction]
-        public void* normals;
+        private void* _normals;
 
-        public NativeCounter.Concurrent counter;
+        private NativeCounter.Concurrent _counter;
+        private ButterflyParticle _variant;
 
-        public NativeArray<Particle> GetParticles() => particles;
+        public NativeArray<Particle> GetParticles() => _particles;
 
-        public NativeArray<Triangle> GetTriangles() => triangles;
+        public NativeArray<Triangle> GetTriangles() => _triangles;
 
-        public NativeArray<Translation> GetTranslations() => translations;
+        public NativeArray<Translation> GetTranslations() => _translations;
 
-        public void Initialize(EntityQuery query, Vector3[] vertices, Vector3[] normals, NativeCounter.Concurrent counter)
+        public void Initialize(
+            ButterflyParticle variant,
+            EntityQuery query,
+            Vector3[] vertices,
+            Vector3[] normals,
+            NativeCounter.Concurrent counter
+        )
         {
-            particles = query.ToComponentDataArray<Particle>(Allocator.TempJob);
-            translations = query.ToComponentDataArray<Translation>(Allocator.TempJob);
-            triangles = query.ToComponentDataArray<Triangle>(Allocator.TempJob);
-
-            // query.ToComponentDataArray<ButterflyParticle>(Allocator.TempJob);
-            this.vertices = UnsafeUtility.AddressOf(ref vertices[0]);
-            this.normals = UnsafeUtility.AddressOf(ref normals[0]);
-            this.counter = counter;
+            _particles = query.ToComponentDataArray<Particle>(Allocator.TempJob);
+            _triangles = query.ToComponentDataArray<Triangle>(Allocator.TempJob);
+            _translations = query.ToComponentDataArray<Translation>(Allocator.TempJob);
+            _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
+            _normals = UnsafeUtility.AddressOf(ref normals[0]);
+            _variant = variant;
+            _counter = counter;
         }
 
         private void AddTriangle(float3 v1, float3 v2, float3 v3)
         {
-            var i = counter.Increment() * 3;
-            UnsafeUtility.WriteArrayElement(vertices, i + 0, v1);
-            UnsafeUtility.WriteArrayElement(vertices, i + 1, v2);
-            UnsafeUtility.WriteArrayElement(vertices, i + 2, v3);
+            var i = _counter.Increment() * 3;
+            UnsafeUtility.WriteArrayElement(_vertices, i + 0, v1);
+            UnsafeUtility.WriteArrayElement(_vertices, i + 1, v2);
+            UnsafeUtility.WriteArrayElement(_vertices, i + 2, v3);
 
             var n = math.normalize(math.cross(v2 - v1, v3 - v1));
-            UnsafeUtility.WriteArrayElement(normals, i + 0, n);
-            UnsafeUtility.WriteArrayElement(normals, i + 1, n);
-            UnsafeUtility.WriteArrayElement(normals, i + 2, n);
+            UnsafeUtility.WriteArrayElement(_normals, i + 0, n);
+            UnsafeUtility.WriteArrayElement(_normals, i + 1, n);
+            UnsafeUtility.WriteArrayElement(_normals, i + 2, n);
         }
 
         public void Execute(int index)
         {
-            var p = particles[index];
+            var p = _particles[index];
 
             var az = p.velocity + 0.001f;
             var ax = math.cross(new float3(0, 1, 0), az);
@@ -85,8 +91,8 @@ namespace Butterfly.JobSystem
             ay = math.normalize(ay) * kSize * flap;
             az = math.normalize(az) * kSize;
 
-            var pos = translations[index].Value;
-            var face = triangles[index];
+            var pos = _translations[index].Value;
+            var face = _triangles[index];
 
             var va1 = pos + face.vertex1;
             var va2 = pos + face.vertex2;
