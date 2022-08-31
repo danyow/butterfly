@@ -1,4 +1,4 @@
-namespace Butterfly.Component
+namespace Butterfly.Component.Wrappers
 {
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Noise Effector")]
     internal sealed class NoiseEffectorAuthoring: UnityEngine.MonoBehaviour

@@ -1,4 +1,4 @@
-namespace Butterfly.Component
+namespace Butterfly.Component.Wrappers
 {
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Render Settings")]
     internal sealed class RenderSettingsAuthoring: UnityEngine.MonoBehaviour

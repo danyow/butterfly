@@ -2,7 +2,7 @@ using Unity.Entities;
 
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     [UpdateBefore(typeof(NoiseEffectorSystem))]
     internal sealed partial class NoiseEffectorAnimationSystem: SystemBase

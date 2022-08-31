@@ -6,7 +6,7 @@ using Unity.Transforms;
 
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     [UpdateBefore(typeof(SimpleParticleReconstructionSystem))]
     [UpdateBefore(typeof(ButterflyParticleReconstructionSystem))]

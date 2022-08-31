@@ -5,11 +5,11 @@ using Unity.Entities;
 using Unity.Mathematics;
 
 // ReSharper disable NotAccessedField.Local
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     [UpdateAfter(typeof(ButterflyParticleReconstructionSystem))]
     [UpdateAfter(typeof(SimpleParticleReconstructionSystem))]
-    internal sealed class FlyRendererSystem: ComponentSystem
+    internal sealed class RendererSystem: ComponentSystem
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private EntityQuery _dependency; // 仅用于启用依赖项跟踪

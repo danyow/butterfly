@@ -1,4 +1,4 @@
-namespace Butterfly.Component
+namespace Butterfly.Component.Interface
 {
     public interface IParticleVariant
     {

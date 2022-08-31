@@ -6,7 +6,7 @@ using Unity.Transforms;
 using RenderSettings = Butterfly.Component.RenderSettings;
 
 // ReSharper disable PartialTypeWithSinglePart
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     [UnityEngine.ExecuteAlways]
     [AlwaysUpdateSystem]

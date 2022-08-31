@@ -1,15 +1,15 @@
 using System.Collections.Generic;
+using Butterfly.Component;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
-using Unity.Burst;
-using Butterfly.Component;
 
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
-    public partial class ParticleExpirationSystemBase<T>: SystemBase where T: struct, ISharedComponentData, IParticleVariant
+    public partial class ParticleExpirationSystemBase<T>: SystemBase where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
     {
         [BurstCompile]
         private struct ParticleExpirationJob: IJob

@@ -1,8 +1,8 @@
+using Butterfly.Component;
 using Unity.Collections;
 using Unity.Transforms;
-using Butterfly.Component;
 
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     public interface IParticleReconstructionJob
     {

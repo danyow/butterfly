@@ -5,10 +5,10 @@ using Unity.Jobs;
 using Unity.Transforms;
 
 // ReSharper disable PartialTypeWithSinglePart
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     public partial class ParticleReconstructionSystemBase<TVariant, TJob>: SystemBase
-        where TVariant: struct, ISharedComponentData, IParticleVariant
+        where TVariant: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
         where TJob: struct, IJobParallelFor, IParticleReconstructionJob
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();

@@ -1,4 +1,4 @@
-namespace Butterfly.Component
+namespace Butterfly.Component.Wrappers
 {
     internal sealed class InstanceConversion: GameObjectConversionSystem
     {

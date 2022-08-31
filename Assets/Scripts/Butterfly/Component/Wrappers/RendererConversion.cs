@@ -1,16 +1,19 @@
-namespace Butterfly.Component
+using Unity.Entities;
+
+namespace Butterfly.Component.Wrappers
 {
-    internal sealed class ButterflyParticleConversion: GameObjectConversionSystem
+    [UpdateAfter(typeof(RenderSettingsConversion))]
+    internal sealed class RendererConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (ButterflyParticleAuthoring authoring) =>
+                (RendererAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new ButterflyParticle { weight = authoring.weight, life = authoring.life, }
+                        new Renderer { workMesh = authoring.workMesh, }
                     );
                 }
             );

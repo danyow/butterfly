@@ -3,15 +3,14 @@
 #if DEBUG_DIAGNOSTICS
 using System.Diagnostics;
 #endif
-
 using System.Collections.Generic;
 using Butterfly.Component;
 using Butterfly.Utility;
-using Unity.Jobs;
 using Unity.Burst;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
@@ -19,7 +18,7 @@ using Random = Butterfly.Utility.Random;
 using Renderer = Butterfly.Component.Renderer;
 using RenderSettings = Butterfly.Component.RenderSettings;
 
-namespace Butterfly
+namespace Butterfly.JobSystem
 {
     internal sealed class InstanceSystem: ComponentSystem
     {
@@ -150,7 +149,7 @@ namespace Butterfly
         private readonly DefaultEntityEntry[] _defaultEntityEntries = new DefaultEntityEntry[16];
 
         private DefaultEntityEntry CreateDefaultEntity<T>(Entity sourceEntity, ref Renderer renderer)
-            where T: struct, ISharedComponentData, IParticleVariant
+            where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
         {
             // 变体
             var variant = EntityManager.GetSharedComponentData<T>(sourceEntity);

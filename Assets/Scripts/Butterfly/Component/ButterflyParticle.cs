@@ -1,7 +1,7 @@
 namespace Butterfly.Component
 {
     [System.SerializableAttribute]
-    public struct ButterflyParticle: Unity.Entities.ISharedComponentData, IParticleVariant
+    public struct ButterflyParticle: Unity.Entities.ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
     {
         public float weight;
         public float GetWeight() => weight;
