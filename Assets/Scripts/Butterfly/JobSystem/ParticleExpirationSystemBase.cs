@@ -9,7 +9,8 @@ using Unity.Jobs;
 // ReSharper disable RedundantExtendsListEntry
 namespace Butterfly.JobSystem
 {
-    public partial class ParticleExpirationSystemBase<T>: SystemBase where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
+    public partial class ParticleExpirationSystemBase<T>: SystemBase
+        where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
     {
         [BurstCompile]
         private struct ParticleExpirationJob: IJob
@@ -27,8 +28,7 @@ namespace Butterfly.JobSystem
             {
                 for(var i = 0; i < entities.Length; i++)
                 {
-                    var calLife = life * (particles[i].random + 1) * 0.5f;
-                    if(particles[i].time > calLife)
+                    if(particles[i].time > life * particles[i].lifeRandom)
                     {
                         ecb.DestroyEntity(entities[i]);
                     }
@@ -69,7 +69,7 @@ namespace Butterfly.JobSystem
 
                 Dependency = job.particles.Dispose(Dependency);
                 Dependency = job.entities.Dispose(Dependency);
-                
+
                 // 为生产者添加作业句柄
                 _simEcbSystem.AddJobHandleForProducer(Dependency);
             }

@@ -34,6 +34,9 @@ namespace Butterfly.JobSystem
         // Allocation 跟踪
         private readonly List<Renderer> _toBeDisposed = new List<Renderer>();
 
+        // 用于为粒子提供 id。
+        private uint _indexCounter;
+
         protected override void OnCreate()
         {
             _instanceQuery = GetEntityQuery(
@@ -234,6 +237,8 @@ namespace Butterfly.JobSystem
             [ReadOnly]
             public float4x4 ltw;
 
+            public uint indexOffset;
+
             public NativeArray<Triangle> triangles;
             public NativeArray<Particle> particles;
             public NativeArray<Translation> translations;
@@ -258,7 +263,7 @@ namespace Butterfly.JobSystem
 
                 translations[index] = new Translation { Value = vc, };
 
-                particles[index] = new Particle { random = Random.Value01((uint)index), };
+                particles[index] = new Particle { id = (uint)index + indexOffset, lifeRandom = Random.Value01((uint)index) * 0.8f + 0.2f, };
             }
         }
 
@@ -280,12 +285,15 @@ namespace Butterfly.JobSystem
                 vertices = UnsafeUtility.AddressOf(ref vertices[0]),
                 indices = UnsafeUtility.AddressOf(ref indices[0]),
                 ltw = matrix,
+                indexOffset = _indexCounter,
                 triangles = new NativeArray<Triangle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
                 translations = new NativeArray<Translation>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
                 particles = new NativeArray<Particle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
             };
 
             var jobHandle = job.Schedule(entityCount, 32);
+
+            _indexCounter += (uint)entityCount;
 
             // 我们希望与作业并行进行实体实例化，所以让工作立即开始。
             JobHandle.ScheduleBatchedJobs();

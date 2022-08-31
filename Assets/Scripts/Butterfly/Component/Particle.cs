@@ -11,8 +11,10 @@ namespace Butterfly.Component
         /// </summary>
         public float3 velocity;
 
+        public uint id;
+
         public float time;
 
-        public float random;
+        public float lifeRandom;
     }
 }

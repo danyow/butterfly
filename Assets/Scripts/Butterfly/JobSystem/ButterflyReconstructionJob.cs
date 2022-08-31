@@ -8,6 +8,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
+using Random = Butterfly.Utility.Random;
 
 // ReSharper disable UnusedMember.Local
 // ReSharper disable MemberCanBePrivate.Local
@@ -77,7 +78,7 @@ namespace Butterfly.JobSystem
             var ax = math.cross(new float3(0, 1, 0), az);
             var ay = math.cross(az, ax);
 
-            var freq = 8 + p.random * 20;
+            var freq = 8 + Random.Value01(p.id) * 20;
             var flap = math.sin(freq * p.time);
 
             ax = math.normalize(ax) * kSize;
