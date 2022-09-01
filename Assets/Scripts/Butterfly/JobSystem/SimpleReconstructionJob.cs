@@ -91,7 +91,7 @@ namespace Butterfly.JobSystem
             var fwd = particle.velocity + 1e-4f;
             var axis = math.normalize(math.cross(fwd, face.vertex1));
             var avel = Random.Value01(particle.id + 10000) * 8;
-            var rot = AxisAngle(axis, particle.time * avel);
+            var rot = quaternion.AxisAngle(axis, particle.time * avel);
 
             // 顶点位置
             var pos = _translations[index].Value;
@@ -100,14 +100,6 @@ namespace Butterfly.JobSystem
             var v3 = pos + math.mul(rot, face.vertex3) * scale;
 
             AddTriangle(v1, v2, v3);
-        }
-
-        private static quaternion AxisAngle(float3 axis, float angle)
-        {
-            var axisUnit = math.normalize(axis);
-            var sina = math.sin(0.5f * angle);
-            var cosa = math.cos(0.5f * angle);
-            return new quaternion { value = new float4(axisUnit.x * sina, axisUnit.y * sina, axisUnit.z * sina, cosa) };
         }
     }
 }
