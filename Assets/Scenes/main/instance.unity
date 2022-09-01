@@ -261,6 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   life: 3
+  size: 0.015
 --- !u!1 &1289544863
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,6 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weight: 1
   life: 3
+  size: 0.015
 --- !u!1 &1326705500
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  life: 1
+  life: 4
 --- !u!114 &1326705506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,4 +472,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weight: 1
-  life: 3
+  life: 6
+  size: 0.015

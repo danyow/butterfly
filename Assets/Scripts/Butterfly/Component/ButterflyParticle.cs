@@ -9,5 +9,6 @@ namespace Butterfly.Component
         public float life;
         public float GetLife() => life;
 
+        public float size;
     }
 }

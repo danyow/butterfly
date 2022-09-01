@@ -4,6 +4,7 @@ namespace Butterfly.Component.Wrappers
     internal sealed class ButterflyParticleAuthoring: UnityEngine.MonoBehaviour
     {
         public float weight = 1;
-        public float life = 3;
+        public float life = 6;
+        public float size = 0.015f;
     }
 }

@@ -8,6 +8,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
+using Random = Butterfly.Utility.Random;
 
 // ReSharper disable NotAccessedField.Local
 // ReSharper disable UnusedMember.Local
@@ -55,19 +56,23 @@ namespace Butterfly.JobSystem
             _particles = query.ToComponentDataArray<Particle>(Allocator.TempJob);
             _triangles = query.ToComponentDataArray<Triangle>(Allocator.TempJob);
             _translations = query.ToComponentDataArray<Translation>(Allocator.TempJob);
+            
             _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
             _normals = UnsafeUtility.AddressOf(ref normals[0]);
+            
             _variant = variant;
             _counter = counter;
         }
 
         private void AddTriangle(float3 v1, float3 v2, float3 v3)
         {
+            // 顶点输出
             var i = _counter.Increment() * 3;
             UnsafeUtility.WriteArrayElement(_vertices, i + 0, v1);
             UnsafeUtility.WriteArrayElement(_vertices, i + 1, v2);
             UnsafeUtility.WriteArrayElement(_vertices, i + 2, v3);
 
+            // 法线输出
             var n = math.normalize(math.cross(v2 - v1, v3 - v1));
             UnsafeUtility.WriteArrayElement(_normals, i + 0, n);
             UnsafeUtility.WriteArrayElement(_normals, i + 1, n);
@@ -79,14 +84,16 @@ namespace Butterfly.JobSystem
             var particle = _particles[index];
             var face = _triangles[index];
 
-            var life = particle.lifeRandom * _variant.life;
-            var time = particle.time;
-            var scale = 1 - time / life;
-            
+            // 使用简单的 lerp 进行缩放
+            var scale = 1 - particle.time / (_variant.life * particle.lifeRandom);
+
+            // 随机旋转
             var fwd = particle.velocity + 1e-4f;
             var axis = math.normalize(math.cross(fwd, face.vertex1));
-            var rot = AxisAngle(axis, particle.time * 3);
+            var avel = Random.Value01(particle.id + 10000) * 8;
+            var rot = AxisAngle(axis, particle.time * avel);
 
+            // 顶点位置
             var pos = _translations[index].Value;
             var v1 = pos + math.mul(rot, face.vertex1) * scale;
             var v2 = pos + math.mul(rot, face.vertex2) * scale;
