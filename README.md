@@ -8,10 +8,9 @@
 
 ## 要求
 
-- Unity 2020.3.37f1
+- Unity 2021.3.8f1
 - `"com.unity.entities": "0.51.1-preview.21"`
 - `"com.unity.jobs": "0.70.0-preview.7"`
-
 
 ## 特别鸣谢
 
