@@ -1,3 +1,5 @@
+MIT License
+
 Copyright (c) 2022 danyow
 
 Please don't use `Ugolino.obj` at the moment.
