@@ -6,12 +6,17 @@ namespace Butterfly.Component.Wrappers
         /// <summary>
         /// 频率
         /// </summary>
-        public float frequency;
+        public float frequency = 6f;
 
         /// <summary>
         /// 振幅
         /// </summary>
-        public float amplitude;
+        public float amplitude = 0.02f;
+
+        /// <summary>
+        /// 动画速度
+        /// </summary>
+        public float animationSpeed = 0.2f;
 
         private void OnDrawGizmos()
         {

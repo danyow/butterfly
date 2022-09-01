@@ -5,9 +5,9 @@ namespace Butterfly.Component
     [System.Serializable]
     internal struct RenderSettings: ISharedComponentData, System.IEquatable<RenderSettings>
     {
-        public UnityEngine.Material material;
         public UnityEngine.Rendering.ShadowCastingMode castShadows;
         public bool receiveShadows;
+        public UnityEngine.Material material;
 
         public bool Equals(RenderSettings other)
         {

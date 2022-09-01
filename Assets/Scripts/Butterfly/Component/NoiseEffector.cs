@@ -14,5 +14,10 @@ namespace Butterfly.Component
         /// 振幅
         /// </summary>
         public float amplitude;
+
+        /// <summary>
+        /// 动画速度
+        /// </summary>
+        public float animationSpeed;
     }
 }

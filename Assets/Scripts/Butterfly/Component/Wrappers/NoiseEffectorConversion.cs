@@ -10,7 +10,10 @@ namespace Butterfly.Component.Wrappers
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddComponentData(
                         entity,
-                        new NoiseEffector { frequency = authoring.frequency, amplitude = authoring.amplitude, }
+                        new NoiseEffector
+                        {
+                            frequency = authoring.frequency, amplitude = authoring.amplitude, animationSpeed = authoring.animationSpeed,
+                        }
                     );
                     DstEntityManager.AddComponent<Unity.Transforms.WorldToLocal>(entity);
                 }
