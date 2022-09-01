@@ -1,8 +1,10 @@
 # ButterFly
 
+![Imgur](https://imgur.com/l6ql2j9.gif)
+
 由 [Keijiro's Firefly](https://github.com/keijiro/Firefly/) 升级而来。
 
-*ButterFly* 使用 `Unity DOTS`(`ECS`)、`Jobs` 系统和 `Burst` 编译器实现特殊效果的示例。
+*ButterFly* 使用 `Unity DOTS`(`ECS`)、`JobSystem` 和 `Burst compiler` 实现特殊效果的示例。
 
 该项目（包括`DOTS`）仍在大力开发中，请不要过分期望。
 
