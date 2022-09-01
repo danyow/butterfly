@@ -1,6 +1,6 @@
 # ButterFly
 
-![Imgur](https://imgur.com/l6ql2j9.gif)
+![Imgur](https://i.imgur.com/l6ql2j9.gif)
 
 由 [Keijiro's Firefly](https://github.com/keijiro/Firefly/) 升级而来。
 
