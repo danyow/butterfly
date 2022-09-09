@@ -1,4 +1,4 @@
-namespace Butterfly.Component.Wrappers
+namespace Butterfly.Component.Particles
 {
     internal sealed class SimpleParticleConversion: GameObjectConversionSystem
     {

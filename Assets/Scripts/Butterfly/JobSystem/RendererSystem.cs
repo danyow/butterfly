@@ -7,8 +7,8 @@ using Unity.Mathematics;
 // ReSharper disable NotAccessedField.Local
 namespace Butterfly.JobSystem
 {
-    [UpdateAfter(typeof(ButterflyParticleReconstructionSystem))]
-    [UpdateAfter(typeof(SimpleParticleReconstructionSystem))]
+    [UpdateAfter(typeof(Butterfly.JobSystem.Particles.ButterflyParticleReconstructionSystem))]
+    [UpdateAfter(typeof(Butterfly.JobSystem.Particles.SimpleParticleReconstructionSystem))]
     internal sealed class RendererSystem: ComponentSystem
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();

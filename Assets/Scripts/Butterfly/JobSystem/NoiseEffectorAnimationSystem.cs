@@ -16,7 +16,11 @@ namespace Butterfly.JobSystem
                     {
                         translation = new Unity.Transforms.Translation
                         {
-                            Value = new Unity.Mathematics.float3(translation.Value.x, translation.Value.y - dt * effector.animationSpeed, translation.Value.z)
+                            Value = new Unity.Mathematics.float3(
+                                translation.Value.x,
+                                translation.Value.y - dt * effector.animationSpeed,
+                                translation.Value.z
+                            )
                         };
                     }
                 )

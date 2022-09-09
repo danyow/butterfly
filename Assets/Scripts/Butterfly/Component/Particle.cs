@@ -3,7 +3,7 @@ using Unity.Mathematics;
 
 namespace Butterfly.Component
 {
-    // 粉碎机
+    // 粒子
     public struct Particle: IComponentData
     {
         /// <summary>

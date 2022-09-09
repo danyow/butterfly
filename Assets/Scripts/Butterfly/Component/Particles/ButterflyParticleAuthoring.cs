@@ -1,4 +1,4 @@
-namespace Butterfly.Component.Wrappers
+namespace Butterfly.Component.Particles
 {
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Particle")]
     internal sealed class ButterflyParticleAuthoring: UnityEngine.MonoBehaviour

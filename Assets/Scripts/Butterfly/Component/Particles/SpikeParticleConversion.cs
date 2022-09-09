@@ -1,16 +1,16 @@
-namespace Butterfly.Component.Wrappers
+namespace Butterfly.Component.Particles
 {
-    internal sealed class ButterflyParticleConversion: GameObjectConversionSystem
+    internal sealed class SpikeParticleConversion: GameObjectConversionSystem
     {
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (ButterflyParticleAuthoring authoring) =>
+                (SimpleParticleAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new ButterflyParticle { weight = authoring.weight, life = authoring.life, size = authoring.size, }
+                        new SpikeParticle { weight = authoring.weight, life = authoring.life, }
                     );
                 }
             );
