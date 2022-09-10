@@ -5,6 +5,7 @@ using System.Diagnostics;
 #endif
 using System.Collections.Generic;
 using Butterfly.Component;
+using Butterfly.Component.Particles;
 using Butterfly.Utility;
 using Unity.Burst;
 using Unity.Collections;
@@ -314,9 +315,9 @@ namespace Butterfly.JobSystem
             _toBeDisposed.Add(renderer);
 
             // 初始化默认实体表。
-            _defaultEntityEntries[0] = CreateDefaultEntity<Butterfly.Component.Particles.SimpleParticle>(sourceEntity, ref renderer);
-            _defaultEntityEntries[1] = CreateDefaultEntity<Butterfly.Component.Particles.ButterflyParticle>(sourceEntity, ref renderer);
-            _defaultEntityEntries[2] = CreateDefaultEntity<Butterfly.Component.Particles.SpikeParticle>(sourceEntity, ref renderer);
+            _defaultEntityEntries[0] = CreateDefaultEntity<SimpleParticle>(sourceEntity, ref renderer);
+            _defaultEntityEntries[1] = CreateDefaultEntity<ButterflyParticle>(sourceEntity, ref renderer);
+            _defaultEntityEntries[2] = CreateDefaultEntity<SpikeParticle>(sourceEntity, ref renderer);
             NormalizeDefaultEntityWeights();
 
             // 创建一个克隆数组作为在每个三角形上放置一个克隆。

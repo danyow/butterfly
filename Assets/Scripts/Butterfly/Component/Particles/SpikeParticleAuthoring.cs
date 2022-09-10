@@ -4,6 +4,6 @@ namespace Butterfly.Component.Particles
     internal sealed class SpikeParticleAuthoring: UnityEngine.MonoBehaviour
     {
         public float weight = 1;
-        public float life = -1;
+        public float life = 999;
     }
 }

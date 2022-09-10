@@ -5,7 +5,7 @@ namespace Butterfly.Component.Particles
         protected override void OnUpdate()
         {
             Entities.ForEach(
-                (SimpleParticleAuthoring authoring) =>
+                (SpikeParticleAuthoring authoring) =>
                 {
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
