@@ -13,7 +13,7 @@ using Random = Butterfly.Utility.Random;
 namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
-    public unsafe struct SpikeReconstructionJob: IJobParallelFor, IParticleReconstructionJob<Butterfly.Component.Particles.SpikeParticle>
+    public unsafe struct SpikeReconstructionJob: IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.SpikeParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;

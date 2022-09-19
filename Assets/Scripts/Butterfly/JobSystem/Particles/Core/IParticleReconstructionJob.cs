@@ -2,7 +2,7 @@ using Butterfly.Component;
 using Unity.Collections;
 using Unity.Transforms;
 
-namespace Butterfly.JobSystem
+namespace Butterfly.JobSystem.Particles.Core
 {
     public interface IParticleReconstructionJob<in TVariant>
     {

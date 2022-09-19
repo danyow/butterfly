@@ -7,8 +7,12 @@ using Unity.Jobs;
 
 // ReSharper disable PartialTypeWithSinglePart
 // ReSharper disable RedundantExtendsListEntry
-namespace Butterfly.JobSystem
+namespace Butterfly.JobSystem.Particles.Core
 {
+    /// <summary>
+    /// 到期
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public partial class ParticleExpirationSystemBase<T>: SystemBase
         where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
     {

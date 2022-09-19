@@ -1,6 +1,6 @@
 namespace Butterfly.JobSystem.Particles
 {
-    public class ButterflyParticleExpirationSystem: ParticleExpirationSystemBase<Butterfly.Component.Particles.ButterflyParticle>
+    public class ButterflyParticleExpirationSystem: Butterfly.JobSystem.Particles.Core.ParticleExpirationSystemBase<Butterfly.Component.Particles.ButterflyParticle>
     {
     }
 }
