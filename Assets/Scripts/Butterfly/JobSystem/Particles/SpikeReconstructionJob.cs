@@ -85,14 +85,17 @@ namespace Butterfly.JobSystem.Particles
             var face = _triangles[index];
             var normal = MakeNormal(face.vertex1, face.vertex2, face.vertex3);
 
-            var offs = new float3(0, particle.time, 0);
+            var time = (float)particle.elapsedTime;
+            var timeScale = math.clamp(particle.time, 0, 1);
+            
+            var offs = new float3(0, time, 0);
             var d = noise.snoise(pos * 8 + offs);
             d = math.pow(math.abs(d), 5);
             
             var v1 = pos + face.vertex1;
             var v2 = pos + face.vertex2;
             var v3 = pos + face.vertex3;
-            var v4 = pos + normal * d;
+            var v4 = pos + normal * d * timeScale;
 
             AddTriangle(v1, v2, v4);
             AddTriangle(v2, v3, v4);

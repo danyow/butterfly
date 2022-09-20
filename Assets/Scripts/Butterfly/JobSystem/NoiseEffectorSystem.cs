@@ -24,6 +24,7 @@ namespace Butterfly.JobSystem
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
+            var elapsedTime = Time.ElapsedTime;
 
             var entities = _query.ToEntityArray(Allocator.Temp);
 
@@ -44,7 +45,8 @@ namespace Butterfly.JobSystem
 
                             particle.velocity += acc * dt;
                             particle.time += dt;
-                            translation.Value += particle.velocity * dt;
+                            particle.elapsedTime = elapsedTime;
+                            translation.Value += particle.velocity * dt * particle.effectRate;
                         }
                     )
                    .ScheduleParallel();

@@ -119,7 +119,8 @@ namespace Butterfly.JobSystem
                         instanceEntity,
                         matrix,
                         vertices,
-                        indices
+                        indices,
+                        instanceData.effectRate
                     );
 
                     // 从实体中移除实例组件。
@@ -240,6 +241,8 @@ namespace Butterfly.JobSystem
 
             public uint indexOffset;
 
+            public float effectRate;
+
             public NativeArray<Triangle> triangles;
             public NativeArray<Particle> particles;
             public NativeArray<Translation> translations;
@@ -264,7 +267,10 @@ namespace Butterfly.JobSystem
 
                 translations[index] = new Translation { Value = vc, };
 
-                particles[index] = new Particle { id = (uint)index + indexOffset, lifeRandom = Random.Value01((uint)index) * 0.8f + 0.2f, };
+                particles[index] = new Particle
+                {
+                    id = (uint)index + indexOffset, lifeRandom = Random.Value01((uint)index) * 0.8f + 0.2f, effectRate = effectRate,
+                };
             }
         }
 
@@ -275,7 +281,8 @@ namespace Butterfly.JobSystem
             Entity sourceEntity,
             float4x4 matrix,
             Vector3[] vertices,
-            int[] indices
+            int[] indices,
+            float effectRate
         )
         {
             var entityCount = indices.Length / 3;
@@ -287,6 +294,7 @@ namespace Butterfly.JobSystem
                 indices = UnsafeUtility.AddressOf(ref indices[0]),
                 ltw = matrix,
                 indexOffset = _indexCounter,
+                effectRate = effectRate,
                 triangles = new NativeArray<Triangle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
                 translations = new NativeArray<Translation>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
                 particles = new NativeArray<Particle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),

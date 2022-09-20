@@ -5,7 +5,15 @@ namespace Butterfly.Component
     [System.Serializable]
     internal struct Instance: ISharedComponentData, System.IEquatable<Instance>
     {
+        /// <summary>
+        /// 模板网格
+        /// </summary>
         public UnityEngine.Mesh templateMesh;
+
+        /// <summary>
+        /// 特效率
+        /// </summary>
+        public float effectRate;
 
         public bool Equals(Instance other)
         {

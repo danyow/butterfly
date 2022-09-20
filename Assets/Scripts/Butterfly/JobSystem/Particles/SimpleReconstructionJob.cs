@@ -37,6 +37,7 @@ namespace Butterfly.JobSystem.Particles
         private void* _normals;
 
         private Butterfly.Component.Particles.SimpleParticle _variant;
+        
         private NativeCounter.Concurrent _counter;
 
         public NativeArray<Particle> GetParticles() => _particles;

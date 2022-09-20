@@ -3,19 +3,13 @@ namespace Butterfly.Component.Wrappers
     [UnityEngine.AddComponentMenu("Butterfly/Butterfly Noise Effector")]
     internal sealed class NoiseEffectorAuthoring: UnityEngine.MonoBehaviour
     {
-        /// <summary>
-        /// 频率
-        /// </summary>
+        [UnityEngine.HeaderAttribute("频率")]
         public float frequency = 6f;
 
-        /// <summary>
-        /// 振幅
-        /// </summary>
+        [UnityEngine.HeaderAttribute("振幅")]
         public float amplitude = 0.02f;
 
-        /// <summary>
-        /// 动画速度
-        /// </summary>
+        [UnityEngine.HeaderAttribute("动画速度")]
         public float animationSpeed = 0.2f;
 
         private void OnDrawGizmos()

@@ -10,7 +10,7 @@ namespace Butterfly.Component.Wrappers
                     var entity = GetPrimaryEntity(authoring);
                     DstEntityManager.AddSharedComponentData(
                         entity,
-                        new Instance { templateMesh = authoring.templateMesh, }
+                        new Instance { templateMesh = authoring.templateMesh, effectRate = authoring.effectRate, }
                     );
 
                     // 加入缩放 否者为1的缩放无法获取
