@@ -1,7 +1,7 @@
 namespace Butterfly.Component.Particles
 {
     [System.SerializableAttribute]
-    public struct ButterflyParticle: Unity.Entities.ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
+    public struct WaveParticle: Unity.Entities.ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
     {
         /// <summary>
         /// 权重
@@ -16,10 +16,5 @@ namespace Butterfly.Component.Particles
         public float life;
 
         public float GetLife() => life;
-
-        /// <summary>
-        /// 尺寸
-        /// </summary>
-        public float size;
     }
 }

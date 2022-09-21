@@ -1,5 +1,4 @@
 using Butterfly.Component;
-using Butterfly.JobSystem.Particles.Core;
 using Butterfly.Utility;
 using Unity.Burst;
 using Unity.Collections;
@@ -11,17 +10,11 @@ using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
 using Random = Butterfly.Utility.Random;
 
-// ReSharper disable NotAccessedField.Local
-// ReSharper disable UnusedMember.Local
-// ReSharper disable MemberCanBePrivate.Local
-// ReSharper disable RedundantExtendsListEntry
-// ReSharper disable UnusedType.Local
-// ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
-    public unsafe struct SimpleReconstructionJob
-        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.SimpleParticle>
+    public unsafe struct WaveReconstructionJob
+        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.WaveParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -38,8 +31,7 @@ namespace Butterfly.JobSystem.Particles
         [NativeDisableUnsafePtrRestriction]
         private void* _normals;
 
-        private Butterfly.Component.Particles.SimpleParticle _variant;
-
+        private Butterfly.Component.Particles.WaveParticle _variant;
         private NativeCounter.Concurrent _counter;
 
         public NativeArray<Particle> GetParticles() => _particles;
@@ -49,7 +41,7 @@ namespace Butterfly.JobSystem.Particles
         public NativeArray<Translation> GetTranslations() => _translations;
 
         public void Initialize(
-            Butterfly.Component.Particles.SimpleParticle variant,
+            Butterfly.Component.Particles.WaveParticle variant,
             EntityQuery query,
             Vector3[] vertices,
             Vector3[] normals,
@@ -69,25 +61,26 @@ namespace Butterfly.JobSystem.Particles
 
         public void Execute(int index)
         {
-            var particle = _particles[index];
-            var face = _triangles[index];
-
-            // 使用简单的 lerp 进行缩放
-            var scale = 1 - particle.time / (_variant.life * particle.lifeRandom);
-
-            // 随机旋转
-            var fwd = particle.velocity + 1e-4f;
-            var axis = math.normalize(math.cross(fwd, face.vertex1));
-            var avel = Random.Value01(particle.id + 10000) * 8;
-            var rot = quaternion.AxisAngle(axis, particle.time * avel);
-
-            // 顶点位置
-            var pos = _translations[index].Value;
-            var v1 = pos + math.mul(rot, face.vertex1) * scale;
-            var v2 = pos + math.mul(rot, face.vertex2) * scale;
-            var v3 = pos + math.mul(rot, face.vertex3) * scale;
-
-            this.AddTriangle(_counter, _vertices, _normals, v1, v2, v3);
+            // var particle = _particles[index];
+            // var pos = _translations[index].Value;
+            // var face = _triangles[index];
+            // var normal = MakeNormal(face.vertex1, face.vertex2, face.vertex3);
+            //
+            // var time = (float)particle.elapsedTime;
+            // var timeScale = math.clamp(particle.time, 0, 1);
+            //
+            // var offs = new float3(0, time, 0);
+            // var d = noise.snoise(pos * 8 + offs);
+            // d = math.pow(math.abs(d), 5);
+            //
+            // var v1 = pos + face.vertex1;
+            // var v2 = pos + face.vertex2;
+            // var v3 = pos + face.vertex3;
+            // var v4 = pos + normal * d * timeScale;
+            //
+            // AddTriangle(v1, v2, v4);
+            // AddTriangle(v2, v3, v4);
+            // AddTriangle(v3, v1, v4);
         }
     }
 }

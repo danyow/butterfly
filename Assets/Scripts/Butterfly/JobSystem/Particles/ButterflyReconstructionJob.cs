@@ -1,4 +1,5 @@
 using Butterfly.Component;
+using Butterfly.JobSystem.Particles.Core;
 using Butterfly.Utility;
 using Unity.Burst;
 using Unity.Collections;
@@ -18,7 +19,8 @@ using Random = Butterfly.Utility.Random;
 namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
-    public unsafe struct ButterflyReconstructionJob: IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.ButterflyParticle>
+    public unsafe struct ButterflyReconstructionJob
+        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.ButterflyParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -61,19 +63,6 @@ namespace Butterfly.JobSystem.Particles
 
             _variant = variant;
             _counter = counter;
-        }
-
-        private void AddTriangle(float3 v1, float3 v2, float3 v3)
-        {
-            var i = _counter.Increment() * 3;
-            UnsafeUtility.WriteArrayElement(_vertices, i + 0, v1);
-            UnsafeUtility.WriteArrayElement(_vertices, i + 1, v2);
-            UnsafeUtility.WriteArrayElement(_vertices, i + 2, v3);
-
-            var n = math.normalize(math.cross(v2 - v1, v3 - v1));
-            UnsafeUtility.WriteArrayElement(_normals, i + 0, n);
-            UnsafeUtility.WriteArrayElement(_normals, i + 1, n);
-            UnsafeUtility.WriteArrayElement(_normals, i + 2, n);
         }
 
         public void Execute(int index)
@@ -122,10 +111,10 @@ namespace Butterfly.JobSystem.Particles
             var v6 = math.lerp(va3, vb6, pt);
 
             // 输出
-            AddTriangle(v1, v2, v5);
-            AddTriangle(v5, v2, v6);
-            AddTriangle(v3, v4, v1);
-            AddTriangle(v1, v4, v2);
+            this.AddTriangle(_counter, _vertices, _normals, v1, v2, v5);
+            this.AddTriangle(_counter, _vertices, _normals, v5, v2, v6);
+            this.AddTriangle(_counter, _vertices, _normals, v3, v4, v1);
+            this.AddTriangle(_counter, _vertices, _normals, v1, v4, v2);
         }
     }
 }

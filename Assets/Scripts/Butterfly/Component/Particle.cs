@@ -20,7 +20,7 @@ namespace Butterfly.Component
         /// 时间
         /// </summary>
         public float time;
-        
+
         /// <summary>
         /// 经过时间
         /// </summary>
