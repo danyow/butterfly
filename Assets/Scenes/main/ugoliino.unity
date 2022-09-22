@@ -137,7 +137,6 @@ GameObject:
   - component: {fileID: 1326705501}
   - component: {fileID: 1326705506}
   - component: {fileID: 1326705505}
-  - component: {fileID: 1326705507}
   m_Layer: 0
   m_Name: Ugoliino Instance
   m_TagString: Untagged
@@ -173,6 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   templateMesh: {fileID: -2084928699955708009, guid: f1fb74df45687084bbe6ed067fc6fb45, type: 3}
+  effectRate: 1
 --- !u!114 &1326705503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,17 +230,3 @@ MonoBehaviour:
   weight: 1
   life: 6
   size: 0.015
---- !u!114 &1326705507
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1326705500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f315ea18c4d4a8f9362c1381243f3e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 0
-  life: 999

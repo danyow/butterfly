@@ -20,7 +20,7 @@ namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
     public unsafe struct ButterflyReconstructionJob
-        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.ButterflyParticle>
+        : IJobParallelFor, IParticleReconstructionJob<Butterfly.Component.Particles.ButterflyParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -111,10 +111,10 @@ namespace Butterfly.JobSystem.Particles
             var v6 = math.lerp(va3, vb6, pt);
 
             // 输出
-            this.AddTriangle(_counter, _vertices, _normals, v1, v2, v5);
-            this.AddTriangle(_counter, _vertices, _normals, v5, v2, v6);
-            this.AddTriangle(_counter, _vertices, _normals, v3, v4, v1);
-            this.AddTriangle(_counter, _vertices, _normals, v1, v4, v2);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v2, v5);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v5, v2, v6);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v3, v4, v1);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v4, v2);
         }
     }
 }

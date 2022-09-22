@@ -1,5 +1,6 @@
 using Butterfly.Component;
 using Butterfly.Utility;
+using Butterfly.JobSystem.Particles.Core;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -8,13 +9,12 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
-using Random = Butterfly.Utility.Random;
 
 namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
     public unsafe struct WaveReconstructionJob
-        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.WaveParticle>
+        : IJobParallelFor, IParticleReconstructionJob<Butterfly.Component.Particles.WaveParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -61,26 +61,21 @@ namespace Butterfly.JobSystem.Particles
 
         public void Execute(int index)
         {
-            // var particle = _particles[index];
-            // var pos = _translations[index].Value;
-            // var face = _triangles[index];
-            // var normal = MakeNormal(face.vertex1, face.vertex2, face.vertex3);
-            //
-            // var time = (float)particle.elapsedTime;
-            // var timeScale = math.clamp(particle.time, 0, 1);
-            //
-            // var offs = new float3(0, time, 0);
-            // var d = noise.snoise(pos * 8 + offs);
-            // d = math.pow(math.abs(d), 5);
-            //
-            // var v1 = pos + face.vertex1;
-            // var v2 = pos + face.vertex2;
-            // var v3 = pos + face.vertex3;
-            // var v4 = pos + normal * d * timeScale;
-            //
-            // AddTriangle(v1, v2, v4);
-            // AddTriangle(v2, v3, v4);
-            // AddTriangle(v3, v1, v4);
+            var particle = _particles[index];
+            var pos = _translations[index].Value;
+            var face = _triangles[index];
+            var time = (float)particle.elapsedTime;
+
+            var v1 = pos + face.vertex1;
+            var v2 = pos + face.vertex2;
+            var v3 = pos + face.vertex3;
+
+            var offs = new float3(0, 0, time * 1.6f);
+            v1 *= 1 + noise.cnoise(v1 * 2 + offs) * 0.2f;
+            v2 *= 1 + noise.cnoise(v2 * 2 + offs) * 0.2f;
+            v3 *= 1 + noise.cnoise(v3 * 2 + offs) * 0.2f;
+
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v2, v3);
         }
     }
 }

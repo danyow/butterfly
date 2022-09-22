@@ -145,23 +145,53 @@ namespace Butterfly.JobSystem
         /// <summary>
         /// 默认实体条目
         /// </summary>
-        private struct DefaultEntityEntry
+        private struct DefaultEntityEntry: System.IEquatable<DefaultEntityEntry>
         {
             public float weight;
             public Entity entity;
+
+            public bool Equals(DefaultEntityEntry other)
+            {
+                return weight.Equals(other.weight) && entity.Equals(other.entity);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is DefaultEntityEntry other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return System.HashCode.Combine(weight, entity);
+            }
         }
 
         private readonly DefaultEntityEntry[] _defaultEntityEntries = new DefaultEntityEntry[16];
 
-        private DefaultEntityEntry CreateDefaultEntity<T>(Entity sourceEntity, ref Renderer renderer)
+        private void CreateDefaultEntity<T>(Entity sourceEntity, ref Renderer renderer)
             where T: struct, ISharedComponentData, Butterfly.Component.Interface.IParticleVariant
         {
+            if(!EntityManager.HasComponent<T>(sourceEntity))
+            {
+                return;
+            }
+
             // 变体
             var variant = EntityManager.GetSharedComponentData<T>(sourceEntity);
             var entity = EntityManager.CreateEntity(_archetype);
             EntityManager.SetSharedComponentData(entity, renderer);
             EntityManager.AddSharedComponentData(entity, variant);
-            return new DefaultEntityEntry { weight = variant.GetWeight(), entity = entity, };
+
+            for(var i = 0; i < _defaultEntityEntries.Length; i++)
+            {
+                var defaultEntityEntry = _defaultEntityEntries[i];
+                if(!defaultEntityEntry.Equals(default(DefaultEntityEntry)))
+                {
+                    continue;
+                }
+                _defaultEntityEntries[i] = new DefaultEntityEntry { weight = variant.GetWeight(), entity = entity, };
+                break;
+            }
         }
 
         /// <summary>
@@ -323,9 +353,10 @@ namespace Butterfly.JobSystem
             _toBeDisposed.Add(renderer);
 
             // 初始化默认实体表。
-            _defaultEntityEntries[0] = CreateDefaultEntity<SimpleParticle>(sourceEntity, ref renderer);
-            _defaultEntityEntries[1] = CreateDefaultEntity<ButterflyParticle>(sourceEntity, ref renderer);
-            _defaultEntityEntries[2] = CreateDefaultEntity<SpikeParticle>(sourceEntity, ref renderer);
+            CreateDefaultEntity<SimpleParticle>(sourceEntity, ref renderer);
+            CreateDefaultEntity<ButterflyParticle>(sourceEntity, ref renderer);
+            CreateDefaultEntity<SpikeParticle>(sourceEntity, ref renderer);
+            CreateDefaultEntity<WaveParticle>(sourceEntity, ref renderer);
             NormalizeDefaultEntityWeights();
 
             // 创建一个克隆数组作为在每个三角形上放置一个克隆。

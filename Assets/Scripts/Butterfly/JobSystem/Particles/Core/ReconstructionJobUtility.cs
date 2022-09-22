@@ -2,7 +2,7 @@ using Unity.Mathematics;
 
 namespace Butterfly.JobSystem.Particles.Core
 {
-    public static class IParticleReconstructionJobExtend
+    public static class ReconstructionJobUtility
     {
         /// <summary>
         /// 添加三角形
@@ -14,8 +14,7 @@ namespace Butterfly.JobSystem.Particles.Core
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <param name="v3"></param>
-        public unsafe static void AddTriangle<T>(
-            this IParticleReconstructionJob<T> _,
+        public unsafe static void AddTriangle(
             Butterfly.Utility.NativeCounter.Concurrent counter,
             void* vertices,
             void* normals,
@@ -37,7 +36,7 @@ namespace Butterfly.JobSystem.Particles.Core
             Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(normals, i + 2, n);
         }
 
-        public static float3 MakeNormal<T>(this IParticleReconstructionJob<T> _, float3 a, float3 b, float3 c)
+        public static float3 MakeNormal(float3 a, float3 b, float3 c)
         {
             return math.normalize(math.cross(b - a, c - a));
         }

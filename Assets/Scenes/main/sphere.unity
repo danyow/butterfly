@@ -137,7 +137,6 @@ GameObject:
   - component: {fileID: 525072942}
   - component: {fileID: 525072946}
   - component: {fileID: 525072945}
-  - component: {fileID: 525072947}
   m_Layer: 0
   m_Name: Blue
   m_TagString: Untagged
@@ -188,6 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   templateMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  effectRate: 1
 --- !u!114 &525072944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,20 +230,6 @@ MonoBehaviour:
   weight: 10
   life: 6
   size: 0.03
---- !u!114 &525072947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 525072940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f315ea18c4d4a8f9362c1381243f3e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 0
-  life: 999
 --- !u!1 &1289544863
 GameObject:
   m_ObjectHideFlags: 0
@@ -258,7 +244,6 @@ GameObject:
   - component: {fileID: 1289544865}
   - component: {fileID: 1289544869}
   - component: {fileID: 1289544868}
-  - component: {fileID: 1289544870}
   m_Layer: 0
   m_Name: Red
   m_TagString: Untagged
@@ -309,6 +294,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   templateMesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+  effectRate: 1
 --- !u!114 &1289544867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,20 +337,6 @@ MonoBehaviour:
   weight: 1
   life: 6
   size: 0.015
---- !u!114 &1289544870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1289544863}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f315ea18c4d4a8f9362c1381243f3e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 0
-  life: 999
 --- !u!1 &1927428513
 GameObject:
   m_ObjectHideFlags: 0

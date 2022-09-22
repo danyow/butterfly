@@ -9,13 +9,12 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
-using Random = Butterfly.Utility.Random;
 
 namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
     public unsafe struct SpikeReconstructionJob
-        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.SpikeParticle>
+        : IJobParallelFor, IParticleReconstructionJob<Butterfly.Component.Particles.SpikeParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -65,7 +64,7 @@ namespace Butterfly.JobSystem.Particles
             var particle = _particles[index];
             var pos = _translations[index].Value;
             var face = _triangles[index];
-            var normal = this.MakeNormal(face.vertex1, face.vertex2, face.vertex3);
+            var normal = ReconstructionJobUtility.MakeNormal(face.vertex1, face.vertex2, face.vertex3);
 
             var time = (float)particle.elapsedTime;
             var timeScale = math.clamp(particle.time, 0, 1);
@@ -79,9 +78,9 @@ namespace Butterfly.JobSystem.Particles
             var v3 = pos + face.vertex3;
             var v4 = pos + normal * d * timeScale;
 
-            this.AddTriangle(_counter, _vertices, _normals, v1, v2, v4);
-            this.AddTriangle(_counter, _vertices, _normals, v2, v3, v4);
-            this.AddTriangle(_counter, _vertices, _normals, v3, v1, v4);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v2, v4);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v2, v3, v4);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v3, v1, v4);
         }
     }
 }

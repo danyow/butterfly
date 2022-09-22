@@ -21,7 +21,7 @@ namespace Butterfly.JobSystem.Particles
 {
     [BurstCompile]
     public unsafe struct SimpleReconstructionJob
-        : IJobParallelFor, Butterfly.JobSystem.Particles.Core.IParticleReconstructionJob<Butterfly.Component.Particles.SimpleParticle>
+        : IJobParallelFor, IParticleReconstructionJob<Butterfly.Component.Particles.SimpleParticle>
     {
         [ReadOnly]
         private NativeArray<Particle> _particles;
@@ -87,7 +87,7 @@ namespace Butterfly.JobSystem.Particles
             var v2 = pos + math.mul(rot, face.vertex2) * scale;
             var v3 = pos + math.mul(rot, face.vertex3) * scale;
 
-            this.AddTriangle(_counter, _vertices, _normals, v1, v2, v3);
+            ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v2, v3);
         }
     }
 }
