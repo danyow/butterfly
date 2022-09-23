@@ -9,6 +9,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using Vector3 = UnityEngine.Vector3;
+using Random = Butterfly.Utility.Random;
 
 namespace Butterfly.JobSystem.Particles
 {
@@ -81,6 +82,47 @@ namespace Butterfly.JobSystem.Particles
             ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v1, v2, v4);
             ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v2, v3, v4);
             ReconstructionJobUtility.AddTriangle(_counter, _vertices, _normals, v3, v1, v4);
+
+            //////////////////////////////////////////////////////////////////////////////////////////
+
+            // var particle = _particles[index];
+            // var time = (float)particle.elapsedTime;
+            //
+            // var triangleExtent = 0.3f;
+            // var noiseFrequency = 2.2f;
+            // var noiseAmplitude = 0.85;
+            // var noiseAnimation = new float3(0, 0.13f, 0.51f);
+            // var noiseOffset = noiseAnimation * time;
+            //
+            // // 三个随机顶点
+            // var vi = (uint)_counter.Increment() * 3;
+            // var v1 = Random.RandomPoint(vi + 0);
+            // var v2 = Random.RandomPoint(vi + 1);
+            // var v3 = Random.RandomPoint(vi + 2);
+            //
+            // // 三角形大小规范化
+            // v2 = math.normalize(v1 + math.normalize(v2 - v1) * triangleExtent);
+            // v3 = math.normalize(v1 + math.normalize(v3 - v1) * triangleExtent);
+            //
+            // // 
+            // var l1 = Noise.SimplexNoise(v1 * noiseFrequency + noiseOffset);
+            // var l2 = Noise.SimplexNoise(v2 * noiseFrequency + noiseOffset);
+            // var l3 = Noise.SimplexNoise(v3 * noiseFrequency + noiseOffset);
+            //
+            // v1 *= (float3)(1 + math.abs(l1 * l1 * l1) * noiseAmplitude);
+            // v2 *= (float3)(1 + math.abs(l2 * l2 * l2) * noiseAmplitude);
+            // v3 *= (float3)(1 + math.abs(l3 * l3 * l3) * noiseAmplitude);
+            //
+            // // 顶点输出
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_vertices, (int)(vi + 0), v1);
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_vertices, (int)(vi + 1), v2);
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_vertices, (int)(vi + 2), v3);
+            //
+            // // 法线输出
+            // var n = math.normalize(math.cross(v2 - v1, v3 - v1));
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_normals, (int)(vi + 0), n);
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_normals, (int)(vi + 1), n);
+            // Unity.Collections.LowLevel.Unsafe.UnsafeUtility.WriteArrayElement(_normals, (int)(vi + 2), n);
         }
     }
 }
