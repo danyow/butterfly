@@ -74,7 +74,7 @@ namespace Butterfly.Utility
         private static readonly float2 C = new float2(1 / 6.0f, 1 / 3.0f);
         private static readonly float4 D = new float4(0, 0.5f, 1, 2);
 
-        public static float4 SimplexNoiseGrad(float3 v)
+        public static float4 SimplexNoiseGradNew(float3 v)
         {
             // First corner
             var i = math.floor(v + new float3(math.dot(v, C.yyy)));
@@ -148,17 +148,17 @@ namespace Butterfly.Utility
             var pdotx = new float4(math.dot(p0, x0), math.dot(p1, x1), math.dot(p2, x2), math.dot(p3, x3));
 
             // Determine noise gradient
-            var temp = m2 * m * pdotx;
-            var gradient = -8.0f * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3);
-            gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3;
-            gradient *= 105.0f;
+            // var temp = m2 * m * pdotx;
+            // var gradient = -8.0f * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3);
+            // gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3;
+            // gradient *= 105.0f;
 
             return 105.0f * math.dot(m4, pdotx);
         }
 
         public static float SimplexNoise(float3 v)
         {
-            return SimplexNoiseGrad(v).w;
+            return SimplexNoiseGradNew(v).w;
         }
     }
 }

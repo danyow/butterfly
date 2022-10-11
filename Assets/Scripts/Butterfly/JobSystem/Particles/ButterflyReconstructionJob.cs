@@ -29,7 +29,7 @@ namespace Butterfly.JobSystem.Particles
         private NativeArray<Triangle> _triangles;
 
         [ReadOnly]
-        private NativeArray<Translation> _translations;
+        private NativeArray<LocalToWorldTransform> _transforms;
 
         [NativeDisableUnsafePtrRestriction]
         private void* _vertices;
@@ -44,7 +44,7 @@ namespace Butterfly.JobSystem.Particles
 
         public NativeArray<Triangle> GetTriangles() => _triangles;
 
-        public NativeArray<Translation> GetTranslations() => _translations;
+        public NativeArray<LocalToWorldTransform> GetTransforms() => _transforms;
 
         public void Initialize(
             Butterfly.Component.Particles.ButterflyParticle variant,
@@ -56,7 +56,7 @@ namespace Butterfly.JobSystem.Particles
         {
             _particles = query.ToComponentDataArray<Particle>(Allocator.TempJob);
             _triangles = query.ToComponentDataArray<Triangle>(Allocator.TempJob);
-            _translations = query.ToComponentDataArray<Translation>(Allocator.TempJob);
+            _transforms = query.ToComponentDataArray<LocalToWorldTransform>(Allocator.TempJob);
 
             _vertices = UnsafeUtility.AddressOf(ref vertices[0]);
             _normals = UnsafeUtility.AddressOf(ref normals[0]);
@@ -88,7 +88,7 @@ namespace Butterfly.JobSystem.Particles
             az = math.normalize(az) * size;
 
             // 顶点
-            var pos = _translations[index].Value;
+            var pos = _transforms[index].Value.Position;
             var face = _triangles[index];
 
             var va1 = pos + face.vertex1;

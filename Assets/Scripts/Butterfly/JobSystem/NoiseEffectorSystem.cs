@@ -23,8 +23,8 @@ namespace Butterfly.JobSystem
 
         protected override void OnUpdate()
         {
-            var deltaTime = Time.DeltaTime;
-            var elapsedTime = Time.ElapsedTime;
+            var deltaTime = World.Time.DeltaTime;
+            var elapsedTime = World.Time.ElapsedTime;
 
             var entities = _query.ToEntityArray(Allocator.Temp);
 
@@ -32,21 +32,22 @@ namespace Butterfly.JobSystem
             {
                 var entity = entities[i];
                 var effector = EntityManager.GetComponentData<NoiseEffector>(entity);
-                var wtl = EntityManager.GetComponentData<WorldToLocal>(entity);
+                var ltw = EntityManager.GetComponentData<LocalToWorld>(entity);
+                var wtl = math.fastinverse(ltw.Value);
 
                 Entities
                    .ForEach(
-                        (ref Particle particle, ref Translation translation) =>
+                        (ref Particle particle, ref LocalToWorldTransform transform) =>
                         {
-                            var pos = translation.Value;
+                            var pos = transform.Value.Position;
                             var acc = DFNoise(pos, effector) * effector.amplitude;
 
-                            var dt = deltaTime * Amplitude(pos, wtl.Value);
+                            var dt = deltaTime * Amplitude(pos, wtl);
 
                             particle.velocity += acc * dt;
                             particle.time += dt;
                             particle.elapsedTime = elapsedTime;
-                            translation.Value += particle.velocity * dt * particle.effectRate;
+                            transform.Value.Position += particle.velocity * dt * particle.effectRate;
                         }
                     )
                    .ScheduleParallel();

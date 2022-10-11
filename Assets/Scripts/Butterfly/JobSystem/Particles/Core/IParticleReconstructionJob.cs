@@ -8,7 +8,7 @@ namespace Butterfly.JobSystem.Particles.Core
     {
         NativeArray<Particle> GetParticles();
         NativeArray<Triangle> GetTriangles();
-        NativeArray<Translation> GetTranslations();
+        NativeArray<LocalToWorldTransform> GetTransforms();
 
         void Initialize(
             TVariant variant,

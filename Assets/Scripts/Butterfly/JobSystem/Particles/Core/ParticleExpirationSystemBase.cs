@@ -49,18 +49,18 @@ namespace Butterfly.JobSystem.Particles.Core
         protected override void OnCreate()
         {
             _query = GetEntityQuery(typeof(Particle), typeof(T));
-            _simEcbSystem = World.GetExistingSystem<BeginSimulationEntityCommandBufferSystem>();
+            _simEcbSystem = World.GetExistingSystemManaged<BeginSimulationEntityCommandBufferSystem>();
         }
 
         protected override void OnUpdate()
         {
             var ecb = _simEcbSystem.CreateCommandBuffer();
 
-            EntityManager.GetAllUniqueSharedComponentData(_variants);
+            EntityManager.GetAllUniqueSharedComponentsManaged(_variants);
 
             foreach(var variant in _variants)
             {
-                _query.SetSharedComponentFilter(variant);
+                _query.SetSharedComponentFilterManaged(variant);
 
                 var job = new ParticleExpirationJob
                 {

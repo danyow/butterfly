@@ -1,5 +1,6 @@
 #if !UNITY_DISABLE_MANAGED_COMPONENTS
 
+using System.Linq;
 using Butterfly.Component;
 using Unity.Entities;
 using Unity.Transforms;
@@ -10,7 +11,7 @@ namespace Butterfly.JobSystem
 {
     [UnityEngine.ExecuteAlways]
     [AlwaysUpdateSystem]
-    internal sealed partial class InstancePreviewSystem: ComponentSystem
+    internal sealed partial class InstancePreviewSystem: ComponentSystemBase
     {
         private EntityQuery _query;
 
@@ -29,14 +30,14 @@ namespace Butterfly.JobSystem
             );
         }
 
-        protected override void OnUpdate()
+        public override void Update()
         {
             var entities = _query.ToEntityArray(Unity.Collections.Allocator.Temp);
             foreach(var entity in entities)
             {
-                var instance = EntityManager.GetSharedComponentData<Instance>(entity);
+                var instance = EntityManager.GetSharedComponentManaged<Instance>(entity);
                 var ltw = EntityManager.GetComponentData<LocalToWorld>(entity);
-                var settings = EntityManager.GetSharedComponentData<RenderSettings>(entity);
+                var settings = EntityManager.GetSharedComponentManaged<RenderSettings>(entity);
 
                 UnityEngine.Graphics.DrawMesh(instance.templateMesh, ltw.Value, settings.material, 0);
             }

@@ -21,7 +21,7 @@ using RenderSettings = Butterfly.Component.RenderSettings;
 
 namespace Butterfly.JobSystem
 {
-    internal sealed class InstanceSystem: ComponentSystem
+    internal sealed class InstanceSystem: ComponentSystemBase
     {
 #region 组件系统实现
 
@@ -42,14 +42,13 @@ namespace Butterfly.JobSystem
         {
             _instanceQuery = GetEntityQuery(
                 typeof(LocalToWorld),
-                typeof(NonUniformScale),
                 typeof(Instance),
                 typeof(RenderSettings)
             );
             _archetype = EntityManager.CreateArchetype(
                 typeof(Particle),
                 typeof(Triangle),
-                typeof(Translation),
+                typeof(LocalToWorldTransform),
                 typeof(Renderer)
             );
         }
@@ -65,7 +64,7 @@ namespace Butterfly.JobSystem
             _toBeDisposed.Clear();
         }
 
-        protected override void OnUpdate()
+        public override void Update()
         {
             // 在这个系统中有三个级别的循环：
             // 
@@ -80,7 +79,7 @@ namespace Butterfly.JobSystem
 #endif
 
             // 循环 1：迭代唯一的实例数据条目。
-            EntityManager.GetAllUniqueSharedComponentData(_instanceDataList);
+            EntityManager.GetAllUniqueSharedComponentsManaged(_instanceDataList);
 
             foreach(var instanceData in _instanceDataList)
             {
@@ -91,7 +90,7 @@ namespace Butterfly.JobSystem
                 }
 
                 // 获取实体数组的副本。不要直接使用迭代器——我们要移除缓冲区组件，它会使迭代器失效。
-                _instanceQuery.SetSharedComponentFilter(instanceData);
+                _instanceQuery.SetSharedComponentFilterManaged(instanceData);
 
                 var iterator = _instanceQuery.ToEntityArray(Allocator.Temp);
                 if(iterator.Length == 0)
@@ -111,8 +110,8 @@ namespace Butterfly.JobSystem
                 {
                     // 检索源数据。
                     var ltw = EntityManager.GetComponentData<LocalToWorld>(instanceEntity);
-                    var scale = EntityManager.GetComponentData<NonUniformScale>(instanceEntity);
-                    var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value);
+                    var scale = EntityManager.GetComponentData<LocalToWorldTransform>(instanceEntity);
+                    var matrix = float4x4.TRS(ltw.Position, ltw.Rotation, scale.Value.Scale);
 
                     // 循环 3：迭代模板网格中的顶点。
                     CreateEntitiesOverMesh(
@@ -177,10 +176,10 @@ namespace Butterfly.JobSystem
             }
 
             // 变体
-            var variant = EntityManager.GetSharedComponentData<T>(sourceEntity);
+            var variant = EntityManager.GetSharedComponentManaged<T>(sourceEntity);
             var entity = EntityManager.CreateEntity(_archetype);
-            EntityManager.SetSharedComponentData(entity, renderer);
-            EntityManager.AddSharedComponentData(entity, variant);
+            EntityManager.SetSharedComponentManaged(entity, renderer);
+            EntityManager.AddSharedComponentManaged(entity, variant);
 
             for(var i = 0; i < _defaultEntityEntries.Length; i++)
             {
@@ -275,7 +274,7 @@ namespace Butterfly.JobSystem
 
             public NativeArray<Triangle> triangles;
             public NativeArray<Particle> particles;
-            public NativeArray<Translation> translations;
+            public NativeArray<LocalToWorldTransform> transforms;
 
             public void Execute(int index)
             {
@@ -295,7 +294,7 @@ namespace Butterfly.JobSystem
 
                 triangles[index] = new Triangle { vertex1 = v1 - vc, vertex2 = v2 - vc, vertex3 = v3 - vc, };
 
-                translations[index] = new Translation { Value = vc, };
+                transforms[index] = new LocalToWorldTransform { Value = UniformScaleTransform.FromPosition(vc), };
 
                 particles[index] = new Particle
                 {
@@ -326,7 +325,7 @@ namespace Butterfly.JobSystem
                 indexOffset = _indexCounter,
                 effectRate = effectRate,
                 triangles = new NativeArray<Triangle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
-                translations = new NativeArray<Translation>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
+                transforms = new NativeArray<LocalToWorldTransform>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
                 particles = new NativeArray<Particle>(entityCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory),
             };
 
@@ -341,7 +340,7 @@ namespace Butterfly.JobSystem
             var counter = new NativeCounter(Allocator.Persistent);
             var renderer = new Renderer
             {
-                settings = EntityManager.GetSharedComponentData<RenderSettings>(sourceEntity),
+                settings = EntityManager.GetSharedComponentManaged<RenderSettings>(sourceEntity),
                 workMesh = new Mesh(),
                 vertices = new Vector3[Renderer.MaxVertices],
                 normals = new Vector3[Renderer.MaxVertices],
@@ -376,7 +375,7 @@ namespace Butterfly.JobSystem
 
                 EntityManager.SetComponentData(entity, job.triangles[i]);
                 EntityManager.SetComponentData(entity, job.particles[i]);
-                EntityManager.SetComponentData(entity, job.translations[i]);
+                EntityManager.SetComponentData(entity, job.transforms[i]);
             }
 
             // 销毁临时对象。
@@ -386,7 +385,7 @@ namespace Butterfly.JobSystem
 
             job.triangles.Dispose();
             job.particles.Dispose();
-            job.translations.Dispose();
+            job.transforms.Dispose();
         }
 
 #endregion

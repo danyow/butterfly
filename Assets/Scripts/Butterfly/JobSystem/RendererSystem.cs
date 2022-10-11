@@ -9,7 +9,7 @@ namespace Butterfly.JobSystem
 {
     [UpdateAfter(typeof(Butterfly.JobSystem.Particles.ButterflyParticleReconstructionSystem))]
     [UpdateAfter(typeof(Butterfly.JobSystem.Particles.SimpleParticleReconstructionSystem))]
-    internal sealed class RendererSystem: ComponentSystem
+    internal sealed class RendererSystem: ComponentSystemBase
     {
         private readonly List<Renderer> _renderers = new List<Renderer>();
         private EntityQuery _dependency; // 仅用于启用依赖项跟踪
@@ -26,14 +26,14 @@ namespace Butterfly.JobSystem
                 _indexArray[i] = i;
             }
         }
-
-        protected override unsafe void OnUpdate()
+        
+        public override unsafe void Update()
         {
             var identityMatrix = UnityEngine.Matrix4x4.identity;
 
             // 迭代渲染器组件。
-            EntityManager.GetAllUniqueSharedComponentData(_renderers);
-
+            EntityManager.GetAllUniqueSharedComponentsManaged(_renderers);
+            
             for(var i = 0; i < _renderers.Count; i++)
             {
                 var renderer = _renderers[i];

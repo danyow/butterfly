@@ -27,15 +27,15 @@ namespace Butterfly.JobSystem.Particles.Core
                 typeof(Renderer),
                 typeof(TVariant),
                 typeof(Particle),
-                typeof(Translation),
+                typeof(LocalToWorldTransform),
                 typeof(Triangle)
             );
         }
 
         protected override void OnUpdate()
         {
-            EntityManager.GetAllUniqueSharedComponentData(_renderers);
-            EntityManager.GetAllUniqueSharedComponentData(_variants);
+            EntityManager.GetAllUniqueSharedComponentsManaged(_renderers);
+            EntityManager.GetAllUniqueSharedComponentsManaged(_variants);
 
             var job = new TJob();
 
@@ -43,7 +43,7 @@ namespace Butterfly.JobSystem.Particles.Core
             {
                 foreach(var variant in _variants)
                 {
-                    _query.SetSharedComponentFilter(renderer, variant);
+                    _query.SetSharedComponentFilterManaged(renderer, variant);
 
                     var count = _query.CalculateEntityCount();
 
@@ -64,7 +64,7 @@ namespace Butterfly.JobSystem.Particles.Core
 
                     Dependency = job.GetParticles().Dispose(Dependency);
                     Dependency = job.GetTriangles().Dispose(Dependency);
-                    Dependency = job.GetTranslations().Dispose(Dependency);
+                    Dependency = job.GetTransforms().Dispose(Dependency);
                 }
             }
 

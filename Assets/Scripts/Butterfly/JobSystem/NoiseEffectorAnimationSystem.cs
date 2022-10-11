@@ -9,17 +9,17 @@ namespace Butterfly.JobSystem
     {
         protected override void OnUpdate()
         {
-            var dt = Time.DeltaTime;
+            var dt = World.Time.DeltaTime;
             Entities
                .ForEach(
-                    (ref Unity.Transforms.Translation translation, in Component.NoiseEffector effector) =>
+                    (ref Unity.Transforms.LocalToWorldTransform transform, in Component.NoiseEffector effector) =>
                     {
-                        translation = new Unity.Transforms.Translation
+                        transform = new Unity.Transforms.LocalToWorldTransform
                         {
-                            Value = new Unity.Mathematics.float3(
-                                translation.Value.x,
-                                translation.Value.y - dt * effector.animationSpeed,
-                                translation.Value.z
+                            Value = Unity.Transforms.UniformScaleTransform.FromPosition(
+                                transform.Value.Position.x,
+                                transform.Value.Position.y - dt * effector.animationSpeed,
+                                transform.Value.Position.z
                             )
                         };
                     }
