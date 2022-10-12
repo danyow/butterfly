@@ -9,8 +9,10 @@ using RenderSettings = Butterfly.Component.RenderSettings;
 // ReSharper disable PartialTypeWithSinglePart
 namespace Butterfly.JobSystem
 {
-    [UnityEngine.ExecuteAlways]
-    [AlwaysUpdateSystem]
+    // [UnityEngine.ExecuteAlways]
+    // [AlwaysUpdateSystem]
+    [RequireMatchingQueriesForUpdate]
+    [WorldSystemFilter(WorldSystemFilterFlags.Editor)]
     internal sealed partial class InstancePreviewSystem: ComponentSystemBase
     {
         private EntityQuery _query;
